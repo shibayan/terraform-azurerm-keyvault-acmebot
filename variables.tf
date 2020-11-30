@@ -1,41 +1,51 @@
 variable "function_app_name" {
-  type = string
+  type        = string
+  description = "The name of the Function App to create."
 }
 
 variable "app_service_plan_name" {
-  type = string
+  type        = string
+  description = "The name of the App Service Plan to create."
 }
 
 variable "storage_account_name" {
-  type = string
+  type        = string
+  description = "The name of the Storage Account to create."
 }
 
 variable "app_insights_name" {
-  type = string
+  type        = string
+  description = "The name of the Application Insights to create."
 }
 
 variable "location" {
-  type = string
+  type        = string
+  description = "Azure region to create resources."
 }
 
 variable "resource_group_name" {
-  type = string
+  type        = string
+  description = "Resource group name to be added."
 }
 
 variable "vault_uri" {
-  type = string
+  type        = string
+  description = "URL of the Key Vault to store the issued certificate."
 }
 
 variable "mail_address" {
-  type = string
+  type        = string
+  description = "Email address for ACME account."
 }
 
 variable "acme_endpoint" {
-  type    = string
-  default = "https://acme-v02.api.letsencrypt.org/"
+  type        = string
+  description = "Certification authority ACME Endpoint."
+  default     = "https://acme-v02.api.letsencrypt.org/"
 }
 
 variable "environment" {
-  type    = string
-  default = "AzureCloud"
+  type        = string
+  description = "The name of the Azure environment."
+  default     = "AzureCloud"
 }
