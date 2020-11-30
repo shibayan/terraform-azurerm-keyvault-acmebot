@@ -18,14 +18,14 @@ variable "app_insights_name" {
   description = "The name of the Application Insights to create."
 }
 
-variable "location" {
-  type        = string
-  description = "Azure region to create resources."
-}
-
 variable "resource_group_name" {
   type        = string
   description = "Resource group name to be added."
+}
+
+variable "location" {
+  type        = string
+  description = "Azure region to create resources."
 }
 
 variable "vault_uri" {

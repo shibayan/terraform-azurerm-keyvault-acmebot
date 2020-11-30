@@ -1,3 +1,13 @@
+provider "azurerm" {
+  features {}
+}
+
+terraform {
+  required_providers {
+    azurerm = "~> 2.0"
+  }
+}
+
 resource "azurerm_storage_account" "storage" {
   name                      = var.storage_account_name
   resource_group_name       = var.resource_group_name
@@ -34,7 +44,7 @@ resource "azurerm_function_app" "function" {
   location                   = var.location
   app_service_plan_id        = azurerm_app_service_plan.serverfarm.id
   storage_account_name       = azurerm_storage_account.storage.name
-  storage_account_access_key = azurerm_storage_account.storage.primaryaccess_key
+  storage_account_access_key = azurerm_storage_account.storage.primary_access_key
   version                    = "~3"
   https_only                 = true
   client_affinity_enabled    = false
