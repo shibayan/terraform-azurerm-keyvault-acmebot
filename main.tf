@@ -48,6 +48,7 @@ resource "azurerm_function_app" "function" {
   version                    = "~3"
   https_only                 = true
   client_affinity_enabled    = false
+  enable_builtin_logging     = false
 
   app_settings = {
     "APPLICATIONINSIGHTS_CONNECTION_STRING" = azurerm_application_insights.insights.connection_string
