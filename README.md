@@ -2,6 +2,7 @@
 
 [![Release](https://img.shields.io/github/release/shibayan/terraform-azurerm-keyvault-acmebot.svg)](https://github.com/shibayan/terraform-azurerm-keyvault-acmebot/releases/latest)
 [![License](https://img.shields.io/github/license/shibayan/terraform-azurerm-keyvault-acmebot.svg)](https://github.com/shibayan/terraform-azurerm-keyvault-acmebot/blob/master/LICENSE)
+[![Terraform Registry](https://img.shields.io/badge/terraform-registry-5c4ee5.svg)](https://registry.terraform.io/modules/shibayan/keyvault-acmebot/azurerm/latest)
 
 ## Usage
 
