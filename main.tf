@@ -50,16 +50,11 @@ resource "azurerm_function_app" "function" {
   client_affinity_enabled    = false
   enable_builtin_logging     = false
 
-  app_settings = {
+  app_settings = merge({
     "APPLICATIONINSIGHTS_CONNECTION_STRING" = azurerm_application_insights.insights.connection_string
     "FUNCTIONS_WORKER_RUNTIME"              = "dotnet"
     "WEBSITE_RUN_FROM_PACKAGE"              = "https://shibayan.blob.core.windows.net/azure-keyvault-letsencrypt/v3/latest.zip"
-    "Acmebot:AzureDns:SubscriptionId"       = ""
-    "Acmebot:Contacts"                      = var.mail_address
-    "Acmebot:Endpoint"                      = var.acme_endpoint
-    "Acmebot:VaultBaseUrl"                  = var.vault_uri
-    "Acmebot:Environment"                   = var.environment
-  }
+  }, local.acmebot_app_settings)
 
   identity {
     type = "SystemAssigned"
