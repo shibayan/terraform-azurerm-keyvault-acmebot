@@ -29,12 +29,12 @@ resource "azurerm_key_vault_access_policy" "default" {
   key_vault_id = azurerm_key_vault.default.id
 
   tenant_id = data.azurerm_client_config.current.tenant_id
-  object_id = module.keyvault-acmebot.principal_id
+  object_id = module.keyvault_acmebot.principal_id
 
   certificate_permissions = ["get", "list", "create", "update"]
 }
 
-module "keyvault-acmebot" {
+module "keyvault_acmebot" {
   source  = "shibayan/keyvault-acmebot/azurerm"
   version = "1.0.0"
 
@@ -53,5 +53,5 @@ module "keyvault-acmebot" {
 }
 
 output "principal_id" {
-  value = module.keyvault-acmebot.principal_id
+  value = module.keyvault_acmebot.principal_id
 }
