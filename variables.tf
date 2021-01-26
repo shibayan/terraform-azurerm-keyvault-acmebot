@@ -64,6 +64,14 @@ variable "cloudflare" {
   default = null
 }
 
+variable "dns_made_easy" {
+  type = object({
+    api_key    = string
+    secret_key = string
+  })
+  default = null
+}
+
 variable "google" {
   type = object({
     key_file64 = string
@@ -94,6 +102,11 @@ locals {
 
   cloudflare = var.cloudflare != null ? {
     "Acmebot:Cloudflare:ApiToken" = var.cloudflare.api_token
+  } : {}
+
+  dns_made_easy = var.dns_made_easy != null ? {
+    "Acmebot:DnsMadeEasy:ApiKey"     = var.dns_made_easy.api_key
+    "Acmebot:DnsMadeEasy:SecretKey " = var.dns_made_easy.secret_key
   } : {}
 
   google = var.google != null ? {
