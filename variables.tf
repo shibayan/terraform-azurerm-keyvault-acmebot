@@ -105,8 +105,8 @@ locals {
   } : {}
 
   dns_made_easy = var.dns_made_easy != null ? {
-    "Acmebot:DnsMadeEasy:ApiKey"     = var.dns_made_easy.api_key
-    "Acmebot:DnsMadeEasy:SecretKey " = var.dns_made_easy.secret_key
+    "Acmebot:DnsMadeEasy:ApiKey"    = var.dns_made_easy.api_key
+    "Acmebot:DnsMadeEasy:SecretKey" = var.dns_made_easy.secret_key
   } : {}
 
   google = var.google != null ? {
@@ -128,5 +128,5 @@ locals {
     "Acmebot:Endpoint"     = var.acme_endpoint
     "Acmebot:VaultBaseUrl" = var.vault_uri
     "Acmebot:Environment"  = var.environment
-  }, local.azure_dns, local.cloudflare, local.google, local.gratis_dns, local.trans_ip)
+  }, local.azure_dns, local.cloudflare, local.dns_made_easy, local.google, local.gratis_dns, local.trans_ip)
 }
