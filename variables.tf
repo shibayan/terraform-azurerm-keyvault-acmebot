@@ -50,6 +50,15 @@ variable "environment" {
   default     = "AzureCloud"
 }
 
+variable "external_account_binding" {
+  type = object({
+    key_id    = string
+    hmac_key  = string
+    algorithm = string
+  })
+  default = null
+}
+
 variable "azure_dns" {
   type = object({
     subscription_id = string
@@ -96,6 +105,12 @@ variable "trans_ip" {
 }
 
 locals {
+  external_account_binding = var.external_account_binding != null ? {
+    "Acmebot:ExternalAccountBinding:KeyId"     = var.external_account_binding.key_id
+    "Acmebot:ExternalAccountBinding:HmacKey"   = var.external_account_binding.hmac_key
+    "Acmebot:ExternalAccountBinding:Algorithm" = var.external_account_binding.algorithm
+  } : {}
+
   azure_dns = var.azure_dns != null ? {
     "Acmebot:AzureDns:SubscriptionId" = var.azure_dns.subscription_id
   } : {}
@@ -128,5 +143,5 @@ locals {
     "Acmebot:Endpoint"     = var.acme_endpoint
     "Acmebot:VaultBaseUrl" = var.vault_uri
     "Acmebot:Environment"  = var.environment
-  }, local.azure_dns, local.cloudflare, local.dns_made_easy, local.google, local.gratis_dns, local.trans_ip)
+  }, local.external_account_binding, local.azure_dns, local.cloudflare, local.dns_made_easy, local.google, local.gratis_dns, local.trans_ip)
 }
