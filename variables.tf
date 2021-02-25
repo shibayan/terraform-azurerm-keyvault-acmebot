@@ -81,7 +81,7 @@ variable "dns_made_easy" {
   default = null
 }
 
-variable "google" {
+variable "google_dns" {
   type = object({
     key_file64 = string
   })
@@ -124,8 +124,8 @@ locals {
     "Acmebot:DnsMadeEasy:SecretKey" = var.dns_made_easy.secret_key
   } : {}
 
-  google = var.google != null ? {
-    "Acmebot:Google:KeyFile64" = var.google.key_file64
+  google_dns = var.google_dns != null ? {
+    "Acmebot:GoogleDns:KeyFile64" = var.google_dns.key_file64
   } : {}
 
   gratis_dns = var.gratis_dns != null ? {
@@ -143,5 +143,5 @@ locals {
     "Acmebot:Endpoint"     = var.acme_endpoint
     "Acmebot:VaultBaseUrl" = var.vault_uri
     "Acmebot:Environment"  = var.environment
-  }, local.external_account_binding, local.azure_dns, local.cloudflare, local.dns_made_easy, local.google, local.gratis_dns, local.trans_ip)
+  }, local.external_account_binding, local.azure_dns, local.cloudflare, local.dns_made_easy, local.google_dns, local.gratis_dns, local.trans_ip)
 }
