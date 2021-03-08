@@ -17,6 +17,7 @@ resource "azurerm_storage_account" "storage" {
   account_replication_type  = "LRS"
   enable_https_traffic_only = true
   allow_blob_public_access  = false
+  min_tls_version           = "TLS1_2"
 }
 
 resource "azurerm_app_service_plan" "serverfarm" {
@@ -49,6 +50,7 @@ resource "azurerm_function_app" "function" {
   https_only                 = true
   client_affinity_enabled    = false
   enable_builtin_logging     = false
+  min_tls_version            = "1.2"
 
   app_settings = merge({
     "APPLICATIONINSIGHTS_CONNECTION_STRING" = azurerm_application_insights.insights.connection_string
