@@ -81,6 +81,14 @@ variable "dns_made_easy" {
   default = null
 }
 
+variable "go_daddy" {
+  type = object({
+    api_key    = string
+    api_secret = string
+  })
+  default = null
+}
+
 variable "google_dns" {
   type = object({
     key_file64 = string
@@ -124,6 +132,11 @@ locals {
     "Acmebot:DnsMadeEasy:SecretKey" = var.dns_made_easy.secret_key
   } : {}
 
+  go_daddy = var.go_daddy != null ? {
+    "Acmebot:GoDaddy:ApiKey"    = var.go_daddy.api_key
+    "Acmebot:GoDaddy:ApiSecret" = var.go_daddy.api_secret
+  } : {}
+
   google_dns = var.google_dns != null ? {
     "Acmebot:GoogleDns:KeyFile64" = var.google_dns.key_file64
   } : {}
@@ -138,10 +151,22 @@ locals {
     "Acmebot:TransIp:PrivateKeyName" = var.trans_ip.private_key_name
   } : {}
 
-  acmebot_app_settings = merge({
+  common = {
     "Acmebot:Contacts"     = var.mail_address
     "Acmebot:Endpoint"     = var.acme_endpoint
     "Acmebot:VaultBaseUrl" = var.vault_uri
     "Acmebot:Environment"  = var.environment
-  }, local.external_account_binding, local.azure_dns, local.cloudflare, local.dns_made_easy, local.google_dns, local.gratis_dns, local.trans_ip)
+  }
+
+  acmebot_app_settings = merge(
+    local.common,
+    local.external_account_binding,
+    local.azure_dns,
+    local.cloudflare,
+    local.dns_made_easy,
+    local.go_daddy,
+    local.google_dns,
+    local.gratis_dns,
+    local.trans_ip
+  )
 }
