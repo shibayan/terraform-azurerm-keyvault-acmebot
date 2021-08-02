@@ -1,13 +1,3 @@
-provider "azurerm" {
-  features {}
-}
-
-terraform {
-  required_providers {
-    azurerm = "~> 2.0"
-  }
-}
-
 resource "azurerm_storage_account" "storage" {
   name                      = var.storage_account_name
   resource_group_name       = var.resource_group_name
@@ -50,7 +40,6 @@ resource "azurerm_function_app" "function" {
   https_only                 = true
   client_affinity_enabled    = false
   enable_builtin_logging     = false
-  min_tls_version            = "1.2"
 
   app_settings = merge({
     "APPLICATIONINSIGHTS_CONNECTION_STRING" = azurerm_application_insights.insights.connection_string
@@ -63,6 +52,7 @@ resource "azurerm_function_app" "function" {
   }
 
   site_config {
-    ftps_state = "Disabled"
+    ftps_state      = "Disabled"
+    min_tls_version = "1.2"
   }
 }
