@@ -36,7 +36,7 @@ resource "azurerm_key_vault_access_policy" "default" {
 
 module "keyvault_acmebot" {
   source  = "shibayan/keyvault-acmebot/azurerm"
-  version = "1.0.0"
+  version = "~> 1.0"
 
   function_app_name     = "func-acmebot-module"
   app_service_plan_name = "plan-acmebot-module"
