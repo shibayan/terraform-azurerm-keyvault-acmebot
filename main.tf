@@ -52,6 +52,7 @@ resource "azurerm_function_app" "function" {
   }
 
   site_config {
-    ftps_state = "Disabled"
+    ftps_state      = "Disabled"
+    min_tls_version = "1.2"
   }
 }
