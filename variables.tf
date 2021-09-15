@@ -73,6 +73,16 @@ variable "cloudflare" {
   default = null
 }
 
+variable "custom_dns" {
+  type = object({
+    endpoint            = string
+    api_key             = string
+    api_key_header_name = string
+    propagation_seconds = number
+  })
+  default = null
+}
+
 variable "dns_made_easy" {
   type = object({
     api_key    = string
@@ -127,6 +137,13 @@ locals {
     "Acmebot:Cloudflare:ApiToken" = var.cloudflare.api_token
   } : {}
 
+  custom_dns = var.custom_dns != null ? {
+    "Acmebot:CustomDns:Endpoint"           = var.custom_dns.endpoint
+    "Acmebot:CustomDns:ApiKey"             = var.custom_dns.api_key
+    "Acmebot:CustomDns:ApiKeyHeaderName"   = var.custom_dns.api_key_header_name
+    "Acmebot:CustomDns:PropagationSeconds" = var.custom_dns.propagation_seconds
+  } : {}
+
   dns_made_easy = var.dns_made_easy != null ? {
     "Acmebot:DnsMadeEasy:ApiKey"    = var.dns_made_easy.api_key
     "Acmebot:DnsMadeEasy:SecretKey" = var.dns_made_easy.secret_key
@@ -163,6 +180,7 @@ locals {
     local.external_account_binding,
     local.azure_dns,
     local.cloudflare,
+    local.custom_dns,
     local.dns_made_easy,
     local.go_daddy,
     local.google_dns,
