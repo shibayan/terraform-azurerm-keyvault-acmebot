@@ -5,7 +5,7 @@ variable "function_app_name" {
 
 variable "allowed_ip_addresses" {
   type        = list(string)
-  description = "A list of allowed ip addresses that can access the ACMEBot UI."
+  description = "A list of allowed ip addresses that can access the Acmebot UI."
   default     = []
 }
 
