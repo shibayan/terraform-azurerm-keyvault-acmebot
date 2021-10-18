@@ -10,5 +10,5 @@ output "tenant_id" {
 
 output "allowed_ip_addresses" {
   value       = var.allowed_ip_addresses
-  description = "IP addresses that are allowed to access the ACMEBot UI."
+  description = "IP addresses that are allowed to access the Acmebot UI."
 }
