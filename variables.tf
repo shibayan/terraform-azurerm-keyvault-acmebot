@@ -3,6 +3,12 @@ variable "function_app_name" {
   description = "The name of the Function App to create."
 }
 
+variable "allowed_ip_addresses" {
+  type        = list(string)
+  description = "A list of allowed ip addresses that can access the Acmebot UI."
+  default     = []
+}
+
 variable "app_service_plan_name" {
   type        = string
   description = "The name of the App Service Plan to create."
