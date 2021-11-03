@@ -56,6 +56,12 @@ variable "environment" {
   default     = "AzureCloud"
 }
 
+variable "webhook_url" {
+  type        = string
+  description = "The webhook where notifications will be sent."
+  default     = ""
+}
+
 variable "external_account_binding" {
   type = object({
     key_id    = string
@@ -174,6 +180,10 @@ locals {
     "Acmebot:TransIp:PrivateKeyName" = var.trans_ip.private_key_name
   } : {}
 
+  webhook_url = var.webhook_url != null ? {
+    "Acmebot:Webhook" = var.webhook_url
+  } : {}
+
   common = {
     "Acmebot:Contacts"     = var.mail_address
     "Acmebot:Endpoint"     = var.acme_endpoint
@@ -191,6 +201,7 @@ locals {
     local.go_daddy,
     local.google_dns,
     local.gratis_dns,
-    local.trans_ip
+    local.trans_ip,
+    local.webhook_url,
   )
 }
