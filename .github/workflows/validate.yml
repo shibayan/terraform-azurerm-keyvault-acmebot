@@ -1,14 +1,14 @@
-name: Terraform
+name: Validate
 
 on:
   pull_request:
     branches: [ master ]
 
 env:
-  TERRAFORM_VERSION: 1.0.9
+  TERRAFORM_VERSION: 1.0.11
 
 jobs:
-  terraform:
+  validate:
     runs-on: ubuntu-latest
 
     steps:
