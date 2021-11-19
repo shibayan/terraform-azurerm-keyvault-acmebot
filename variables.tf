@@ -56,6 +56,12 @@ variable "environment" {
   default     = "AzureCloud"
 }
 
+variable "time_zone" {
+  type        = string
+  description = "The name of time zone as the basis for automatic update timing."
+  default     = "UTC"
+}
+
 variable "webhook_url" {
   type        = string
   description = "The webhook where notifications will be sent."
