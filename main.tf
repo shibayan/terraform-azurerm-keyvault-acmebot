@@ -38,7 +38,6 @@ resource "azurerm_function_app" "function" {
   storage_account_access_key = azurerm_storage_account.storage.primary_access_key
   version                    = "~3"
   https_only                 = true
-  client_affinity_enabled    = false
   enable_builtin_logging     = false
 
   app_settings = merge({
