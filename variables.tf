@@ -65,7 +65,7 @@ variable "time_zone" {
 variable "webhook_url" {
   type        = string
   description = "The webhook where notifications will be sent."
-  default     = ""
+  default     = null
 }
 
 variable "external_account_binding" {
