@@ -24,6 +24,11 @@ variable "app_insights_name" {
   description = "The name of the Application Insights to create."
 }
 
+variable "workspace_name" {
+  type        = string
+  description = "The name of the Log Analytics Workspace to create."
+}
+
 variable "resource_group_name" {
   type        = string
   description = "Resource group name to be added."
