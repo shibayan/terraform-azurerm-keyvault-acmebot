@@ -22,11 +22,20 @@ resource "azurerm_app_service_plan" "serverfarm" {
   }
 }
 
+resource "azurerm_log_analytics_workspace" "workspace" {
+  name                = var.workspace_name
+  resource_group_name = var.resource_group_name
+  location            = var.location
+  sku                 = "PerGB2018"
+  retention_in_days   = 30
+}
+
 resource "azurerm_application_insights" "insights" {
   name                = var.app_insights_name
   resource_group_name = var.resource_group_name
   location            = var.location
   application_type    = "web"
+  workspace_id        = azurerm_log_analytics_workspace.workspace.id
 }
 
 resource "azurerm_function_app" "function" {
