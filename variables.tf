@@ -73,6 +73,12 @@ variable "webhook_url" {
   default     = null
 }
 
+variable "mitigate_chain_order" {
+  type        = bool
+  description = "Mitigate certificate ordering issues that occur with some services."
+  default     = false
+}
+
 variable "external_account_binding" {
   type = object({
     key_id    = string
@@ -196,10 +202,11 @@ locals {
   } : {}
 
   common = {
-    "Acmebot:Contacts"     = var.mail_address
-    "Acmebot:Endpoint"     = var.acme_endpoint
-    "Acmebot:VaultBaseUrl" = var.vault_uri
-    "Acmebot:Environment"  = var.environment
+    "Acmebot:Contacts"           = var.mail_address
+    "Acmebot:Endpoint"           = var.acme_endpoint
+    "Acmebot:VaultBaseUrl"       = var.vault_uri
+    "Acmebot:Environment"        = var.environment
+    "Acmebot:MitigateChainOrder" = var.mitigate_chain_order
   }
 
   acmebot_app_settings = merge(

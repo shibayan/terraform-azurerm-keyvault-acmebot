@@ -8,6 +8,13 @@ terraform {
   }
 }
 
+resource "random_string" "random" {
+  length  = 4
+  lower   = true
+  upper   = false
+  special = false
+}
+
 data "azurerm_client_config" "current" {
 }
 
@@ -17,7 +24,7 @@ resource "azurerm_resource_group" "default" {
 }
 
 resource "azurerm_key_vault" "default" {
-  name                = "kv-acmebot-module"
+  name                = "kv-acmebot-module-${random_string.random.result}"
   resource_group_name = azurerm_resource_group.default.name
   location            = azurerm_resource_group.default.location
 
@@ -38,11 +45,11 @@ module "keyvault_acmebot" {
   source  = "shibayan/keyvault-acmebot/azurerm"
   version = "~> 1.0"
 
-  function_app_name     = "func-acmebot-module"
-  app_service_plan_name = "plan-acmebot-module"
-  storage_account_name  = "stacmebotmodule"
-  app_insights_name     = "appi-acmebot-module"
-  workspace_name        = "log-acmebot-module"
+  function_app_name     = "func-acmebot-module-${random_string.random.result}"
+  app_service_plan_name = "plan-acmebot-module-${random_string.random.result}"
+  storage_account_name  = "stacmebotmodule${random_string.random.result}"
+  app_insights_name     = "appi-acmebot-module-${random_string.random.result}"
+  workspace_name        = "log-acmebot-module-${random_string.random.result}"
   resource_group_name   = azurerm_resource_group.default.name
   location              = azurerm_resource_group.default.location
   mail_address          = "YOUR-EMAIL-ADDRESS"
