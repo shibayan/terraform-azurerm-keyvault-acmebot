@@ -143,6 +143,16 @@ variable "gratis_dns" {
   default = null
 }
 
+variable "route_53_dns" {
+  type = object({
+    access_key     = string
+    default_region = string
+    secret_key     = string
+  })
+  default   = null
+  sensitive = true
+}
+
 variable "trans_ip" {
   type = object({
     customer_name    = string
@@ -192,6 +202,12 @@ locals {
     "Acmebot:GratisDns:Password" = var.gratis_dns.password
   } : {}
 
+  route_53_dns = var.route_53_dns != null ? {
+    "Acmebot:Route53:AccessKey" = var.route_53_dns.access_key
+    "Acmebot:Route53:Region"    = var.route_53_dns.default_region
+    "Acmebot:Route53:SecretKey" = var.route_53_dns.secret_key
+  } : {}
+
   trans_ip = var.trans_ip != null ? {
     "Acmebot:TransIp:CustomerName"   = var.trans_ip.customer_name
     "Acmebot:TransIp:PrivateKeyName" = var.trans_ip.private_key_name
@@ -219,6 +235,7 @@ locals {
     local.go_daddy,
     local.google_dns,
     local.gratis_dns,
+    local.route_53_dns,
     local.trans_ip,
     local.webhook_url,
   )
