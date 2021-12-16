@@ -120,6 +120,13 @@ variable "dns_made_easy" {
   default = null
 }
 
+variable "gandi" {
+  type = object({
+    api_key = string
+  })
+  default = null
+}
+
 variable "go_daddy" {
   type = object({
     api_key    = string
@@ -178,6 +185,10 @@ locals {
     "Acmebot:DnsMadeEasy:SecretKey" = var.dns_made_easy.secret_key
   } : {}
 
+  gandi = var.gandi != null ? {
+    "Acmebot:Gandi:ApiKey" = var.gandi.api_key
+  } : {}
+
   go_daddy = var.go_daddy != null ? {
     "Acmebot:GoDaddy:ApiKey"    = var.go_daddy.api_key
     "Acmebot:GoDaddy:ApiSecret" = var.go_daddy.api_secret
@@ -216,6 +227,7 @@ locals {
     local.cloudflare,
     local.custom_dns,
     local.dns_made_easy,
+    local.gandi,
     local.go_daddy,
     local.google_dns,
     local.gratis_dns,
