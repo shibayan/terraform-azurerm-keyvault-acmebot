@@ -35,7 +35,7 @@ variable "resource_group_name" {
 }
 
 variable "auth_settings" {
-  type        = map(any)
+  type        = any
   description = "Authentication settings for the function app"
   default     = {}
 }
