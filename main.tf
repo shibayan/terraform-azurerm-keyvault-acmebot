@@ -54,10 +54,21 @@ resource "azurerm_function_app" "function" {
     "FUNCTIONS_WORKER_RUNTIME"              = "dotnet"
     "WEBSITE_RUN_FROM_PACKAGE"              = "https://shibayan.blob.core.windows.net/azure-keyvault-letsencrypt/v3/latest.zip"
     "WEBSITE_TIME_ZONE"                     = var.time_zone
-  }, local.acmebot_app_settings)
+  }, local.acmebot_app_settings, var.app_settings)
 
   identity {
     type = "SystemAssigned"
+  }
+
+  auth_settings {
+    enabled                       = var.auth_settings.enabled
+    unauthenticated_client_action = var.auth_settings.unauthenticated_client_action
+    issuer                        = var.auth_settings.issuer
+    token_store_enabled           = var.auth_settings.token_store_enabled
+    active_directory {
+      allowed_audiences = var.auth_settings.active_directory.allowed_audiences
+      client_id         = var.auth_settings.active_directory.client_id
+    }
   }
 
   site_config {

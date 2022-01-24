@@ -34,6 +34,27 @@ variable "resource_group_name" {
   description = "Resource group name to be added."
 }
 
+variable "auth_settings" {
+  type = object({
+    enabled                       = bool
+    issuer                        = string
+    token_store_enabled           = bool
+    unauthenticated_client_action = string
+    active_directory = object({
+      client_id         = string
+      allowed_audiences = list(string)
+    })
+  })
+  description = "Authentication settings for the function app"
+  default     = null
+}
+
+variable "app_settings" {
+  description = "Additional settings to set for the function app"
+  type        = map(string)
+  default     = {}
+}
+
 variable "location" {
   type        = string
   description = "Azure region to create resources."
