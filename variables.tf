@@ -42,11 +42,17 @@ variable "auth_settings" {
     unauthenticated_client_action = string
     active_directory = object({
       client_id         = string
-      allowed_audiences = []
+      allowed_audiences = list(string)
     })
   })
   description = "Authentication settings for the function app"
   default     = null
+}
+
+variable "app_settings" {
+  description = "Additional settings to set for the function app"
+  type        = map(string)
+  default     = {}
 }
 
 variable "location" {
