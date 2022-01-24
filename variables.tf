@@ -34,6 +34,12 @@ variable "resource_group_name" {
   description = "Resource group name to be added."
 }
 
+variable "auth_settings" {
+  type        = map(any)
+  description = "Authentication settings for the function app"
+  default     = {}
+}
+
 variable "location" {
   type        = string
   description = "Azure region to create resources."

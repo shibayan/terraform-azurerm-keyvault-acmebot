@@ -60,6 +60,18 @@ resource "azurerm_function_app" "function" {
     type = "SystemAssigned"
   }
 
+  auth_settings {
+    enabled                       = lookup(var.auth_settings, "enabled", false)
+    issuer                        = lookup(var.auth_settings, "issuer", null)
+    token_store_enabled           = lookup(var.auth_settings, "token_store_enabled", true)
+    unauthenticated_client_action = lookup(var.auth_settings, "unauthenticated_client_action", "RedirectToLoginPage")
+
+    active_directory {
+      client_id         = lookup(lookup(var.auth_settings, "active_directory", {}), "client_id", null)
+      allowed_audiences = lookup(lookup(var.auth_settings, "active_directory", {}), "allowed_audiences", [])
+    }
+  }
+
   site_config {
     ftps_state      = "Disabled"
     min_tls_version = "1.2"
