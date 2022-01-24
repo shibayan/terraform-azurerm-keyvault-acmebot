@@ -35,9 +35,18 @@ variable "resource_group_name" {
 }
 
 variable "auth_settings" {
-  type        = any
+  type = object({
+    enabled                       = bool
+    issuer                        = string
+    token_store_enabled           = bool
+    unauthenticated_client_action = string
+    active_directory = object({
+      client_id         = string
+      allowed_audiences = []
+    })
+  })
   description = "Authentication settings for the function app"
-  default     = {}
+  default     = null
 }
 
 variable "location" {
