@@ -12,3 +12,8 @@ output "allowed_ip_addresses" {
   value       = var.allowed_ip_addresses
   description = "IP addresses that are allowed to access the Acmebot UI."
 }
+
+output "function_app" {
+  value = azurerm_function_app.function
+  description = "Created Function App"
+}
