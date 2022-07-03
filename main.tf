@@ -34,16 +34,16 @@ resource "azurerm_application_insights" "insights" {
   workspace_id        = azurerm_log_analytics_workspace.workspace.id
 }
 
-resource "azurerm_function_app" "function" {
-  name                       = var.function_app_name
-  resource_group_name        = var.resource_group_name
-  location                   = var.location
-  app_service_plan_id        = azurerm_service_plan.serverfarm.id
-  storage_account_name       = azurerm_storage_account.storage.name
-  storage_account_access_key = azurerm_storage_account.storage.primary_access_key
-  version                    = "~3"
-  https_only                 = true
-  enable_builtin_logging     = false
+resource "azurerm_windows_function_app" "function" {
+  name                        = var.function_app_name
+  resource_group_name         = var.resource_group_name
+  location                    = var.location
+  service_plan_id             = azurerm_service_plan.serverfarm.id
+  storage_account_name        = azurerm_storage_account.storage.name
+  storage_account_access_key  = azurerm_storage_account.storage.primary_access_key
+  functions_extension_version = "~3"
+  https_only                  = true
+  builtin_logging_enabled     = false
 
   app_settings = merge({
     "APPLICATIONINSIGHTS_CONNECTION_STRING" = azurerm_application_insights.insights.connection_string
@@ -71,8 +71,8 @@ resource "azurerm_function_app" "function" {
   }
 
   site_config {
-    ftps_state      = "Disabled"
-    min_tls_version = "1.2"
+    ftps_state          = "Disabled"
+    minimum_tls_version = "1.2"
     dynamic "ip_restriction" {
       for_each = var.allowed_ip_addresses
       content {
