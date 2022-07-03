@@ -10,16 +10,12 @@ resource "azurerm_storage_account" "storage" {
   min_tls_version                 = "TLS1_2"
 }
 
-resource "azurerm_app_service_plan" "serverfarm" {
+resource "azurerm_service_plan" "serverfarm" {
   name                = var.app_service_plan_name
   resource_group_name = var.resource_group_name
   location            = var.location
-  kind                = "functionapp"
-
-  sku {
-    tier = "Dynamic"
-    size = "Y1"
-  }
+  os_type             = "Windows"
+  sku_name            = "Y1"
 }
 
 resource "azurerm_log_analytics_workspace" "workspace" {
@@ -42,7 +38,7 @@ resource "azurerm_function_app" "function" {
   name                       = var.function_app_name
   resource_group_name        = var.resource_group_name
   location                   = var.location
-  app_service_plan_id        = azurerm_app_service_plan.serverfarm.id
+  app_service_plan_id        = azurerm_service_plan.serverfarm.id
   storage_account_name       = azurerm_storage_account.storage.name
   storage_account_access_key = azurerm_storage_account.storage.primary_access_key
   version                    = "~3"
