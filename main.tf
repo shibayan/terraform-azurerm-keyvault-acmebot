@@ -10,16 +10,13 @@ resource "azurerm_storage_account" "storage" {
   min_tls_version                 = "TLS1_2"
 }
 
-resource "azurerm_app_service_plan" "serverfarm" {
+resource "azurerm_service_plan" "serverfarm" {
   name                = var.app_service_plan_name
   resource_group_name = var.resource_group_name
   location            = var.location
-  kind                = "functionapp"
 
-  sku {
-    tier = "Dynamic"
-    size = "Y1"
-  }
+  os_type  = "Windows"
+  sku_name = "Y1"
 }
 
 resource "azurerm_log_analytics_workspace" "workspace" {
@@ -38,22 +35,19 @@ resource "azurerm_application_insights" "insights" {
   workspace_id        = azurerm_log_analytics_workspace.workspace.id
 }
 
-resource "azurerm_function_app" "function" {
-  name                       = var.function_app_name
-  resource_group_name        = var.resource_group_name
-  location                   = var.location
-  app_service_plan_id        = azurerm_app_service_plan.serverfarm.id
-  storage_account_name       = azurerm_storage_account.storage.name
-  storage_account_access_key = azurerm_storage_account.storage.primary_access_key
-  version                    = "~3"
-  https_only                 = true
-  enable_builtin_logging     = false
+resource "azurerm_windows_function_app" "function" {
+  name                 = var.function_app_name
+  resource_group_name  = var.resource_group_name
+  location             = var.location
+  service_plan_id      = azurerm_service_plan.serverfarm.id
+  storage_account_name = azurerm_storage_account.storage.name
+
+  functions_extension_version = "~4"
+  https_only                  = true
 
   app_settings = merge({
-    "APPLICATIONINSIGHTS_CONNECTION_STRING" = azurerm_application_insights.insights.connection_string
-    "FUNCTIONS_WORKER_RUNTIME"              = "dotnet"
-    "WEBSITE_RUN_FROM_PACKAGE"              = "https://shibayan.blob.core.windows.net/azure-keyvault-letsencrypt/v3/latest.zip"
-    "WEBSITE_TIME_ZONE"                     = var.time_zone
+    "WEBSITE_RUN_FROM_PACKAGE" = "https://stacmebotprod.blob.core.windows.net/keyvault-acmebot/v4/latest.zip"
+    "WEBSITE_TIME_ZONE"        = var.time_zone
   }, local.acmebot_app_settings, var.app_settings)
 
   identity {
@@ -75,8 +69,14 @@ resource "azurerm_function_app" "function" {
   }
 
   site_config {
-    ftps_state      = "Disabled"
-    min_tls_version = "1.2"
+    application_insights_connection_string = azurerm_application_insights.insights.connection_string
+    ftps_state                             = "Disabled"
+    minimum_tls_version                    = "1.2"
+
+    application_stack {
+      dotnet_version = "6"
+    }
+
     dynamic "ip_restriction" {
       for_each = var.allowed_ip_addresses
       content {

@@ -38,12 +38,11 @@ resource "azurerm_key_vault_access_policy" "default" {
   tenant_id = data.azurerm_client_config.current.tenant_id
   object_id = module.keyvault_acmebot.principal_id
 
-  certificate_permissions = ["get", "list", "create", "update"]
+  certificate_permissions = ["Get", "List", "Create", "Update"]
 }
 
 module "keyvault_acmebot" {
-  source  = "shibayan/keyvault-acmebot/azurerm"
-  version = "~> 1.0"
+  source = "../"
 
   function_app_name     = "func-acmebot-module-${random_string.random.result}"
   app_service_plan_name = "plan-acmebot-module-${random_string.random.result}"
@@ -58,6 +57,8 @@ module "keyvault_acmebot" {
   azure_dns = {
     subscription_id = data.azurerm_client_config.current.subscription_id
   }
+
+  allowed_ip_addresses = ["0.0.0.0"]
 }
 
 output "principal_id" {
