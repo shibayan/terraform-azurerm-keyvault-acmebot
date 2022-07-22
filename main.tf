@@ -36,11 +36,12 @@ resource "azurerm_application_insights" "insights" {
 }
 
 resource "azurerm_windows_function_app" "function" {
-  name                 = var.function_app_name
-  resource_group_name  = var.resource_group_name
-  location             = var.location
-  service_plan_id      = azurerm_service_plan.serverfarm.id
-  storage_account_name = azurerm_storage_account.storage.name
+  name                       = var.function_app_name
+  resource_group_name        = var.resource_group_name
+  location                   = var.location
+  service_plan_id            = azurerm_service_plan.serverfarm.id
+  storage_account_name       = azurerm_storage_account.storage.name
+  storage_account_access_key = azurerm_storage_account.storage.primary_access_key
 
   functions_extension_version = "~4"
   https_only                  = true
