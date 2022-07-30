@@ -254,7 +254,7 @@ locals {
     local.gandi,
     local.go_daddy,
     local.google_dns,
-    local.gratis_dns,
+    local.route_53,
     local.trans_ip,
     local.webhook_url,
   )
