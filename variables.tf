@@ -109,6 +109,7 @@ variable "external_account_binding" {
   default = null
 }
 
+# DNS Provider Configuration
 variable "azure_dns" {
   type = object({
     subscription_id = string
@@ -163,10 +164,11 @@ variable "google_dns" {
   default = null
 }
 
-variable "gratis_dns" {
+variable "route_53" {
   type = object({
-    username = string
-    password = string
+    access_key = string
+    secret_key = string
+    region     = string
   })
   default = null
 }
@@ -219,9 +221,10 @@ locals {
     "Acmebot:GoogleDns:KeyFile64" = var.google_dns.key_file64
   } : {}
 
-  gratis_dns = var.gratis_dns != null ? {
-    "Acmebot:GratisDns:Username" = var.gratis_dns.username
-    "Acmebot:GratisDns:Password" = var.gratis_dns.password
+  route_53 = var.route_53 != null ? {
+    "Acmebot:Route53:AccessKey" = var.route_53.access_key
+    "Acmebot:Route53:SecretKey" = var.route_53.secret_key
+    "Acmebot:Route53:Region"    = var.route_53.region
   } : {}
 
   trans_ip = var.trans_ip != null ? {
