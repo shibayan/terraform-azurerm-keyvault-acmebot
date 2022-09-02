@@ -10,7 +10,7 @@
 ```hcl
 module "keyvault_acmebot" {
   source  = "shibayan/keyvault-acmebot/azurerm"
-  version = "~> 1.0"
+  version = "~> 2.0"
 
   function_app_name     = "func-acmebot-module"
   app_service_plan_name = "plan-acmebot-module"
