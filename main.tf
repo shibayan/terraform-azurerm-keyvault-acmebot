@@ -105,4 +105,12 @@ resource "azurerm_windows_function_app" "function" {
       }
     }
   }
+
+  lifecycle {
+    ignore_changes = [
+      tags,
+      app_settings["MICROSOFT_PROVIDER_AUTHENTICATION_SECRET"],
+      sticky_settings["app_setting_names"]
+    ]
+  }
 }
