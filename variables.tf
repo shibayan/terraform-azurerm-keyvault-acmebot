@@ -208,7 +208,7 @@ variable "virtual_network_subnet_ids" {
   description = "Single subnet it to integrate function into. Not compatible with allowed_ip_addresses"
   default = []
   validation {
-    condition     = length(var.virtual_network_subnet_ids) == 1
+    condition     = length(var.virtual_network_subnet_ids) == 0 || length(var.virtual_network_subnet_ids) == 1
     error_message = "Only one permitted."
   }
 }
