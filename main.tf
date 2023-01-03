@@ -116,7 +116,7 @@ resource "azurerm_private_endpoint" "pe" {
 
   private_service_connection {
     name                           = "${var.function_app_name}-pe"
-    private_connection_resource_id = azurerm_private_link_service.example.id
+    #private_connection_resource_id = azurerm_private_link_service.example.id
     is_manual_connection           = false
   }
 }
