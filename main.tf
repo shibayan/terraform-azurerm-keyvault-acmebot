@@ -104,3 +104,19 @@ resource "azurerm_app_service_virtual_network_swift_connection" "swift_connectio
   app_service_id = azurerm_windows_function_app.function.id
   subnet_id      = each.key
 }
+
+
+resource "azurerm_private_endpoint" "pe" {
+  for_each = toset(var.virtual_network_subnet_ids)
+
+  name                = "${var.function_app_name}-pe"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  subnet_id           = azurerm_subnet.endpoint.id
+
+  private_service_connection {
+    name                           = "${var.function_app_name}-pe"
+    private_connection_resource_id = azurerm_private_link_service.example.id
+    is_manual_connection           = false
+  }
+}
