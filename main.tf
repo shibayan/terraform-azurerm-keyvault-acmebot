@@ -116,6 +116,8 @@ resource "azurerm_public_ip" "pub" {
 }
 
 resource "azurerm_lb" "lb" {
+  for_each = local.virtual_network_subnet_ids_dict
+
   name                = "${var.function_app_name}-lb"
   sku                 = "Standard"
   location            = var.location
@@ -141,7 +143,7 @@ resource "azurerm_private_link_service" "pls" {
   }
 
   load_balancer_frontend_ip_configuration_ids = [
-    azurerm_lb.example.frontend_ip_configuration[each.key].id,
+    azurerm_lb.lb.frontend_ip_configuration[each.key].id,
   ]
 }
 
