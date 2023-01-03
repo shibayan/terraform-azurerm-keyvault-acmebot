@@ -89,10 +89,10 @@ resource "azurerm_windows_function_app" "function" {
       }
     }
 
-    dynamic "virtual_network_subnet_ids" {
+    dynamic "virtual_network_subnet_id" {
       for_each = var.virtual_network_subnet_ids
       content {
-        virtual_network_subnet_id = virtual_network_subnet_ids.value
+        virtual_network_subnet_id = virtual_network_subnet_id.value
       }
     }
   }

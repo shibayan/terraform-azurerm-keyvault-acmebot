@@ -207,6 +207,10 @@ variable "virtual_network_subnet_ids" {
   type = list(string)
   description = "Single subnet it to integrate function into. Not compatible with allowed_ip_addresses"
   default = []
+  validation {
+    condition     = length(var.virtual_network_subnet_ids) == 1
+    error_message = "Only one permitted."
+  }
 }
 
 locals {
