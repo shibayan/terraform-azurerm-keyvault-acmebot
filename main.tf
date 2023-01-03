@@ -102,7 +102,7 @@ resource "azurerm_app_service_virtual_network_swift_connection" "swift_connectio
   for_each = local.virtual_network_subnet_ids_dict
 
   app_service_id = azurerm_windows_function_app.function.id
-  subnet_id      = each.key
+  subnet_id      = each.value
 }
 
 resource "azurerm_public_ip" "pub" {
@@ -143,7 +143,7 @@ resource "azurerm_private_link_service" "pls" {
   }
 
   load_balancer_frontend_ip_configuration_ids = [
-    azurerm_lb.lb[each.key].frontend_ip_configuration.id,
+    azurerm_lb.lb[each.key].frontend_ip_configuration.0.id,
   ]
 }
 
