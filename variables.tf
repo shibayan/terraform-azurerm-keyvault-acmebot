@@ -109,6 +109,38 @@ variable "external_account_binding" {
   default = null
 }
 
+variable "sku_name" {
+  type = string
+  description = "Function app SKU name"
+  default = "Y1"
+  validation {
+    condition     = contains(["B1", "B2", "B3", "D1", "F1", "I1", "I2", "I3", "I1v2", "I2v2", "I3v2", "P1v2", "P2v2", "P3v2", "P1v3", "P2v3", "P3v3", "S1", "S2", "S3", "SHARED", "EP1", "EP2", "EP3", "WS1", "WS2", "WS3", "Y1"], var.sku_name)
+    error_message = "Invalid sku_name."
+  }
+}
+
+variable "app_scale_limit" {
+  type = number
+  description = "Function app scale limit"
+  default = 2
+}
+
+variable "vnet_route_all_enabled" {
+  type = bool
+  description = "Function route all traffic via vnet"
+  default = false
+}
+
+variable "virtual_network_subnet_ids" {
+  type = list(string)
+  description = "Single subnet it to integrate function into. Not compatible with allowed_ip_addresses"
+  default = []
+  validation {
+    condition     = length(var.virtual_network_subnet_ids) == 0 || (length(var.virtual_network_subnet_ids) == 1 && length(var.allowed_ip_addresses) == 0)
+    error_message = "Only one permitted."
+  }
+}
+
 # DNS Provider Configuration
 variable "azure_dns" {
   type = object({
@@ -179,38 +211,6 @@ variable "trans_ip" {
     private_key_name = string
   })
   default = null
-}
-
-variable "sku_name" {
-  type = string
-  description = "Function app SKU name"
-  default = "Y1"
-  validation {
-    condition     = contains(["B1", "B2", "B3", "D1", "F1", "I1", "I2", "I3", "I1v2", "I2v2", "I3v2", "P1v2", "P2v2", "P3v2", "P1v3", "P2v3", "P3v3", "S1", "S2", "S3", "SHARED", "EP1", "EP2", "EP3", "WS1", "WS2", "WS3", "Y1"], var.sku_name)
-    error_message = "Invalid sku_name."
-  }
-}
-
-variable "app_scale_limit" {
-  type = number
-  description = "Function app scale limit"
-  default = 2
-}
-
-variable "vnet_route_all_enabled" {
-  type = bool
-  description = "Function route all traffic via vnet"
-  default = false
-}
-
-variable "virtual_network_subnet_ids" {
-  type = list(string)
-  description = "Single subnet it to integrate function into. Not compatible with allowed_ip_addresses"
-  default = []
-  validation {
-    condition     = length(var.virtual_network_subnet_ids) == 0 || length(var.virtual_network_subnet_ids) == 1
-    error_message = "Only one permitted."
-  }
 }
 
 locals {
