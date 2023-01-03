@@ -141,6 +141,10 @@ variable "virtual_network_subnet_ids" {
   }
 }
 
+locals {
+  virtual_network_subnet_ids_dict = {for i, v in var.virtual_network_subnet_ids: i:v}
+}
+
 # DNS Provider Configuration
 variable "azure_dns" {
   type = object({

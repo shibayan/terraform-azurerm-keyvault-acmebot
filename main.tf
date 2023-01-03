@@ -99,24 +99,64 @@ resource "azurerm_windows_function_app" "function" {
 }
 
 resource "azurerm_app_service_virtual_network_swift_connection" "swift_connection" {
-  for_each = toset(var.virtual_network_subnet_ids)
+  for_each = local.virtual_network_subnet_ids_dict
 
   app_service_id = azurerm_windows_function_app.function.id
   subnet_id      = each.key
 }
 
 
+resource "azurerm_public_ip" "pub" {
+  for_each = local.virtual_network_subnet_ids_dict
+
+  name                = "${var.function_app_name}-public-ip"
+  sku                 = "Standard"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  allocation_method   = "Static"
+}
+
+resource "azurerm_lb" "lb" {
+  name                = "${var.function_app_name}-lb"
+  sku                 = "Standard"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+
+  frontend_ip_configuration {
+    name                 = azurerm_public_ip.pub.[each.key].name
+    public_ip_address_id = azurerm_public_ip.pub.[each.key].id
+  }
+}
+
+resource "azurerm_private_link_service" "pls" {
+  for_each = local.virtual_network_subnet_ids_dict
+
+  name                = "${var.function_app_name}-privatelink"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+
+  nat_ip_configuration {
+    name      = "${var.function_app_name}-privatelink-nat"
+    primary   = true
+    subnet_id = each.value
+  }
+
+  load_balancer_frontend_ip_configuration_ids = [
+    azurerm_lb.example.frontend_ip_configuration.[each.key].id,
+  ]
+}
+
 resource "azurerm_private_endpoint" "pe" {
-  for_each = toset(var.virtual_network_subnet_ids)
+  for_each = local.virtual_network_subnet_ids_dict
 
   name                = "${var.function_app_name}-pe"
   location            = var.location
   resource_group_name = var.resource_group_name
-  subnet_id           = each.key
+  subnet_id           = each.value
 
   private_service_connection {
     name                           = "${var.function_app_name}-pe"
-    #private_connection_resource_id = azurerm_private_link_service.example.id
+    private_connection_resource_id = azurerm_private_link_service.pls.[each.key].id
     is_manual_connection           = false
   }
 }
