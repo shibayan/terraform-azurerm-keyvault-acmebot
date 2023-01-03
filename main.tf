@@ -112,7 +112,7 @@ resource "azurerm_private_endpoint" "pe" {
   name                = "${var.function_app_name}-pe"
   location            = var.location
   resource_group_name = var.resource_group_name
-  subnet_id           = azurerm_subnet.endpoint.id
+  subnet_id           = each.key
 
   private_service_connection {
     name                           = "${var.function_app_name}-pe"
