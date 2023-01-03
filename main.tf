@@ -16,7 +16,7 @@ resource "azurerm_service_plan" "serverfarm" {
   location            = var.location
 
   os_type  = "Windows"
-  sku_name = "Y1"
+  sku_name = var.sku_name
 }
 
 resource "azurerm_log_analytics_workspace" "workspace" {
@@ -73,6 +73,10 @@ resource "azurerm_windows_function_app" "function" {
     application_insights_connection_string = azurerm_application_insights.insights.connection_string
     ftps_state                             = "Disabled"
     minimum_tls_version                    = "1.2"
+    always_on                              = false
+    http2_enabled                          = true
+    app_scale_limit                        = var.app_scale_limit
+    vnet_route_all_enabled                 = var.vnet_route_all_enabled
 
     application_stack {
       dotnet_version = "6"
@@ -82,6 +86,13 @@ resource "azurerm_windows_function_app" "function" {
       for_each = var.allowed_ip_addresses
       content {
         ip_address = ip_restriction.value
+      }
+    }
+
+    dynamic "virtual_network_subnet_ids" {
+      for_each = var.virtual_network_subnet_ids
+      content {
+        virtual_network_subnet_id = virtual_network_subnet_ids.value
       }
     }
   }
