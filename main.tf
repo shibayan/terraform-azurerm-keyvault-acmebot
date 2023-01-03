@@ -105,14 +105,13 @@ resource "azurerm_app_service_virtual_network_swift_connection" "swift_connectio
   subnet_id      = each.key
 }
 
-
 resource "azurerm_public_ip" "pub" {
   for_each = local.virtual_network_subnet_ids_dict
 
   name                = "${var.function_app_name}-public-ip"
-  sku                 = "Standard"
   location            = var.location
   resource_group_name = var.resource_group_name
+  sku                 = "Standard"
   allocation_method   = "Static"
 }
 
@@ -123,8 +122,8 @@ resource "azurerm_lb" "lb" {
   resource_group_name = var.resource_group_name
 
   frontend_ip_configuration {
-    name                 = azurerm_public_ip.pub.[each.key].name
-    public_ip_address_id = azurerm_public_ip.pub.[each.key].id
+    name                 = azurerm_public_ip.pub[each.key].name
+    public_ip_address_id = azurerm_public_ip.pub[each.key].id
   }
 }
 
@@ -142,7 +141,7 @@ resource "azurerm_private_link_service" "pls" {
   }
 
   load_balancer_frontend_ip_configuration_ids = [
-    azurerm_lb.example.frontend_ip_configuration.[each.key].id,
+    azurerm_lb.example.frontend_ip_configuration[each.key].id,
   ]
 }
 
@@ -156,7 +155,7 @@ resource "azurerm_private_endpoint" "pe" {
 
   private_service_connection {
     name                           = "${var.function_app_name}-pe"
-    private_connection_resource_id = azurerm_private_link_service.pls.[each.key].id
+    private_connection_resource_id = azurerm_private_link_service.pls[each.key].id
     is_manual_connection           = false
   }
 }
