@@ -102,5 +102,5 @@ resource "azurerm_app_service_virtual_network_swift_connection" "swift_connectio
   for_each = var.virtual_network_subnet_ids
 
   app_service_id = azurerm_windows_function_app.function.id
-  subnet_id      = each.value
+  subnet_id      = each.key
 }
