@@ -2,7 +2,7 @@ resource "azurerm_storage_account" "storage" {
   name                            = var.storage_account_name
   resource_group_name             = var.resource_group_name
   location                        = var.location
-  account_kind                    = "Storage"
+  account_kind                    = "StorageV2"
   account_tier                    = "Standard"
   account_replication_type        = "LRS"
   enable_https_traffic_only       = true
@@ -172,7 +172,7 @@ resource "azurerm_private_endpoint" "sto-pe" {
 
   private_service_connection {
     name                           = "${var.storage_account_name}-pe"
-    private_connection_resource_id = azurerm_private_link_service.pls[each.key].id
+    private_connection_resource_id = azurerm_storage_account.storage.id
     is_manual_connection           = false
     subresource_names              = ["blob"]
   }
