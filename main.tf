@@ -90,7 +90,7 @@ resource "azurerm_windows_function_app" "function" {
     }
 
     dynamic "ip_restriction" {
-      for_each = var.virtual_network_subnet_ids_integration
+      for_each = local.virtual_network_subnet_ids_integration_dict
       content {
         virtual_network_subnet_id = ip_restriction.value
       }
