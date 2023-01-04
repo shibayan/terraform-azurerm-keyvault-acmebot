@@ -118,10 +118,10 @@ resource "azurerm_public_ip" "pub" {
 resource "azurerm_lb" "lb" {
   for_each = local.virtual_network_subnet_ids_pe_dict
 
-  name                = "${var.function_app_name}-lb"
-  sku                 = "Standard"
-  location            = var.location
-  resource_group_name = var.resource_group_name
+  name                   = "${var.function_app_name}-lb"
+  sku                    = "Standard"
+  location               = var.location
+  resource_group_name    = var.resource_group_name
 
   frontend_ip_configuration {
     name                 = azurerm_public_ip.pub[each.key].name
@@ -156,8 +156,9 @@ resource "azurerm_private_endpoint" "func-pe" {
   subnet_id           = each.value
 
   private_service_connection {
-    name                           = "${var.function_app_name}-pe"
-    private_connection_resource_id = azurerm_private_link_service.pls[each.key].id
+    name                           = "${var.function_app_name}-psc"
+    #private_connection_resource_id = azurerm_private_link_service.pls[each.key].id
+    private_connection_resource_id = azurerm_windows_function_app.function.id
     is_manual_connection           = false
   }
 }
@@ -171,7 +172,7 @@ resource "azurerm_private_endpoint" "sto-pe" {
   subnet_id           = each.value
 
   private_service_connection {
-    name                           = "${var.storage_account_name}-pe"
+    name                           = "${var.storage_account_name}-psc"
     private_connection_resource_id = azurerm_storage_account.storage.id
     is_manual_connection           = false
     subresource_names              = ["blob"]
