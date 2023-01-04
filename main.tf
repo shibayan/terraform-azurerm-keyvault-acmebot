@@ -174,6 +174,6 @@ resource "azurerm_private_endpoint" "sto-pe" {
     name                           = "${var.storage_account_name}-pe"
     private_connection_resource_id = azurerm_private_link_service.pls[each.key].id
     is_manual_connection           = false
-    subresource_names              = "blob"
+    subresource_names              = ["blob"]
   }
 }
