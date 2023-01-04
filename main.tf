@@ -90,7 +90,7 @@ resource "azurerm_windows_function_app" "function" {
     }
 
     dynamic "ip_restriction" {
-      for_each = var.virtual_network_subnet_ids
+      for_each = var.virtual_network_subnet_ids_integration
       content {
         virtual_network_subnet_id = ip_restriction.value
       }
@@ -99,14 +99,14 @@ resource "azurerm_windows_function_app" "function" {
 }
 
 resource "azurerm_app_service_virtual_network_swift_connection" "swift_connection" {
-  for_each = local.virtual_network_subnet_ids_dict
+  for_each = local.virtual_network_subnet_ids_pe_dict
 
   app_service_id = azurerm_windows_function_app.function.id
   subnet_id      = each.value
 }
 
 resource "azurerm_public_ip" "pub" {
-  for_each = local.virtual_network_subnet_ids_dict
+  for_each = local.virtual_network_subnet_ids_pe_dict
 
   name                = "${var.function_app_name}-public-ip"
   location            = var.location
@@ -116,7 +116,7 @@ resource "azurerm_public_ip" "pub" {
 }
 
 resource "azurerm_lb" "lb" {
-  for_each = local.virtual_network_subnet_ids_dict
+  for_each = local.virtual_network_subnet_ids_pe_dict
 
   name                = "${var.function_app_name}-lb"
   sku                 = "Standard"
@@ -130,7 +130,7 @@ resource "azurerm_lb" "lb" {
 }
 
 resource "azurerm_private_link_service" "pls" {
-  for_each = local.virtual_network_subnet_ids_dict
+  for_each = local.virtual_network_subnet_ids_pe_dict
 
   name                = "${var.function_app_name}-privatelink"
   location            = var.location
@@ -148,7 +148,7 @@ resource "azurerm_private_link_service" "pls" {
 }
 
 resource "azurerm_private_endpoint" "pe" {
-  for_each = local.virtual_network_subnet_ids_dict
+  for_each = local.virtual_network_subnet_ids_pe_dict
 
   name                = "${var.function_app_name}-pe"
   location            = var.location

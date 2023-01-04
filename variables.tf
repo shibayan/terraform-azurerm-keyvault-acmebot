@@ -131,7 +131,7 @@ variable "vnet_route_all_enabled" {
   default = false
 }
 
-variable "virtual_network_subnet_ids" {
+variable "virtual_network_subnet_ids_integration" {
   type = list(string)
   description = "Single subnet it to integrate function into. Not compatible with allowed_ip_addresses"
   default = []
@@ -141,8 +141,16 @@ variable "virtual_network_subnet_ids" {
   }
 }
 
+
+variable "virtual_network_subnet_ids_pe" {
+  type = list(string)
+  description = "Single subnet it to integrate function into. Not compatible with allowed_ip_addresses"
+  default = []
+}
+
 locals {
-  virtual_network_subnet_ids_dict = {for i, v in var.virtual_network_subnet_ids: i => v}
+  virtual_network_subnet_ids_integration_dict = {for i, v in var.virtual_network_subnet_ids_integration: i => v}
+  virtual_network_subnet_ids_pe_dict          = {for i, v in var.virtual_network_subnet_ids_pe         : i => v}
 }
 
 # DNS Provider Configuration
