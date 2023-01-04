@@ -147,7 +147,7 @@ resource "azurerm_private_link_service" "pls" {
   ]
 }
 
-resource "azurerm_private_endpoint" "pe" {
+resource "azurerm_private_endpoint" "func-pe" {
   for_each = local.virtual_network_subnet_ids_pe_dict
 
   name                = "${var.function_app_name}-pe"
@@ -159,5 +159,21 @@ resource "azurerm_private_endpoint" "pe" {
     name                           = "${var.function_app_name}-pe"
     private_connection_resource_id = azurerm_private_link_service.pls[each.key].id
     is_manual_connection           = false
+  }
+}
+
+resource "azurerm_private_endpoint" "sto-pe" {
+  for_each            = local.virtual_network_subnet_ids_pe_dict
+
+  name                = "${var.storage_account_name}-pe"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  subnet_id           = each.value
+
+  private_service_connection {
+    name                           = "${var.storage_account_name}-pe"
+    private_connection_resource_id = azurerm_private_link_service.pls[each.key].id
+    is_manual_connection           = false
+    subresource_names              = "blob"
   }
 }
