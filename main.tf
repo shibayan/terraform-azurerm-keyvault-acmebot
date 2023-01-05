@@ -163,7 +163,6 @@ resource "azurerm_private_endpoint" "func-pe" {
 
   private_service_connection {
     name                           = "${var.function_app_name}-psc"
-    #private_connection_resource_id = azurerm_private_link_service.pls[each.key].id
     private_connection_resource_id = azurerm_windows_function_app.function.id
     is_manual_connection           = false
     subresource_names              = ["sites"]
