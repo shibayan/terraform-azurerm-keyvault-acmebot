@@ -180,24 +180,24 @@ resource "azurerm_private_endpoint" "sto-pe" {
   }
 }
 
-resource "azurerm_private_dns_zone_virtual_network_link" "network_link_func" {
-  name                  = "${var.function_app_name}-netlink"
-  resource_group_name   = var.resource_group_name
-  private_dns_zone_name = local.private_dns_zone_func_name
-  virtual_network_id    = local.private_dns_zone_func_network_id
-}
+#resource "azurerm_private_dns_zone_virtual_network_link" "network_link_func" {
+#  name                  = "${var.function_app_name}-netlink"
+#  resource_group_name   = var.resource_group_name
+#  private_dns_zone_name = local.private_dns_zone_func_name
+#  virtual_network_id    = local.private_dns_zone_func_network_id
+#}
 
-resource "azurerm_private_dns_zone_virtual_network_link" "network_link_sto" {
-  name                  = "${var.storage_account_name}-netlink"
-  resource_group_name   = var.resource_group_name
-  private_dns_zone_name = local.private_dns_zone_storage_name
-  virtual_network_id    = local.private_dns_zone_storage_network_id
-}
+#resource "azurerm_private_dns_zone_virtual_network_link" "network_link_sto" {
+#  name                  = "${var.storage_account_name}-netlink"
+#  resource_group_name   = var.resource_group_name
+#  private_dns_zone_name = local.private_dns_zone_storage_name
+#  virtual_network_id    = local.private_dns_zone_storage_network_id
+#}
 
-locals {
-  private_dns_zone_func_name          = "privatelink.web.core.windows.net"
-  private_dns_zone_func_network_id    = "/subscriptions/22ddb27a-140e-4feb-8111-61bf1f76f06e/resourceGroups/BejoResearchFirewall/providers/Microsoft.Network/virtualNetworks/Research-vnet"
-
-  private_dns_zone_storage_name       = "privatelink.blob.core.windows.net"
-  private_dns_zone_storage_network_id = "/subscriptions/22ddb27a-140e-4feb-8111-61bf1f76f06e/resourceGroups/BejoResearchFirewall/providers/Microsoft.Network/virtualNetworks/Research-vnet"
-}
+#locals {
+#  private_dns_zone_func_name          = "privatelink.web.core.windows.net"
+#  private_dns_zone_func_network_id    = "/subscriptions/22ddb27a-140e-4feb-8111-61bf1f76f06e/resourceGroups/BejoResearchFirewall/providers/Microsoft.Network/virtualNetworks/Research-vnet"
+#
+#  private_dns_zone_storage_name       = "privatelink.blob.core.windows.net"
+#  private_dns_zone_storage_network_id = "/subscriptions/22ddb27a-140e-4feb-8111-61bf1f76f06e/resourceGroups/BejoResearchFirewall/providers/Microsoft.Network/virtualNetworks/Research-vnet"
+#}
