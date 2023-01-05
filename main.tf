@@ -9,7 +9,11 @@ resource "azurerm_storage_account" "storage" {
   allow_nested_items_to_be_public = false
   min_tls_version                 = "TLS1_2"
 
-  virtual_network_subnet_id       = len(var.virtual_network_subnet_ids_pe) > 0 ? null : var.virtual_network_subnet_ids_pe[0]
+  network_rules {
+    default_action             = "Deny"
+    ip_rules                   = len(var.allowed_ip_addresses         ) > 0 ? null : var.allowed_ip_addresses
+    virtual_network_subnet_ids = len(var.virtual_network_subnet_ids_pe) > 0 ? null : var.virtual_network_subnet_ids_pe
+  }
 }
 
 resource "azurerm_service_plan" "serverfarm" {
