@@ -302,4 +302,9 @@ locals {
     local.trans_ip,
     local.webhook_url,
   )
+
+  function_ip_restrictions = merge(
+    for v in var.allowed_ip_addresses                  : {"ip_address" =>    v, "virtual_network_subnet_id" => null},
+    for v in var.virtual_network_subnet_ids_integration: {"ip_address" => null, "virtual_network_subnet_id" =>    v}
+  )
 }

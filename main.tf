@@ -89,18 +89,27 @@ resource "azurerm_windows_function_app" "function" {
     }
 
     dynamic "ip_restriction" {
-      for_each = var.allowed_ip_addresses
+      for_each = local.function_ip_restrictions
       content {
-        ip_address = ip_restriction.value
+        ip_address                = ip_restriction.value.ip_address
+        virtual_network_subnet_id = ip_restriction.value.virtual_network_subnet_id
       }
     }
 
-    dynamic "ip_restriction" {
-      for_each = local.virtual_network_subnet_ids_integration_dict
-      content {
-        virtual_network_subnet_id = ip_restriction.value
-      }
-    }
+
+    #dynamic "ip_restriction" {
+    #  for_each = var.allowed_ip_addresses
+    #  content {
+    #    ip_address = ip_restriction.value
+    #  }
+    #}
+
+    #dynamic "ip_restriction" {
+    #  for_each = local.virtual_network_subnet_ids_integration_dict
+    #  content {
+    #    virtual_network_subnet_id = ip_restriction.value
+    #  }
+    #}
   }
 }
 
