@@ -14,22 +14,22 @@ output "allowed_ip_addresses" {
 }
 
 output "private_endpoint_function_id" {
-  value       = azurerm_private_endpoint.func-pe[].id
+  value       = azurerm_private_endpoint.func-pe.*.id
   description = "Private Endpoint Function Id"
 }
 
 output "private_endpoint_function_dns_configs" {
-  value       = azurerm_private_endpoint.func-pe[].custom_dns_configs
+  value       = azurerm_private_endpoint.func-pe.*.custom_dns_configs
   description = "Private Endpoint Function Custom DNS Configs"
 }
 
 output "private_endpoint_storage_id" {
-  value       = azurerm_private_endpoint.sto-pe[].id
+  value       = azurerm_private_endpoint.sto-pe.*.id
   description = "Private Endpoint Storage ID"
 }
 
 output "private_endpoint_storage_dns_configs" {
-  value       = azurerm_private_endpoint.sto-pe[].custom_dns_configs
+  value       = azurerm_private_endpoint.sto-pe.*.custom_dns_configs
   description = "Private Endpoint Storage Custom DNS Configs"
 }
 
