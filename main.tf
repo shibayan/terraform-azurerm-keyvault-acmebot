@@ -8,6 +8,13 @@ resource "azurerm_storage_account" "storage" {
   enable_https_traffic_only       = true
   allow_nested_items_to_be_public = false
   min_tls_version                 = "TLS1_2"
+
+  dynamic "virtual_network_subnet_id" {
+    for_each = local.virtual_network_subnet_ids_pe_dict
+    content {
+      virtual_network_subnet_id = virtual_network_subnet_id.value
+    }
+  }
 }
 
 resource "azurerm_service_plan" "serverfarm" {
