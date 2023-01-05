@@ -148,6 +148,27 @@ variable "virtual_network_subnet_ids_pe" {
   default = []
 }
 
+variable "private_dns_zone_rg" {
+  type = string
+  description = "Private DNS zone resource group"
+  default = null
+  nullable = true
+}
+
+variable "private_dns_zone_function_web_name" {
+  type = string
+  description = "Private DNS zone name for function"
+  default = null
+  nullable = true
+}
+
+variable "private_dns_zone_storage_blob_name" {
+  type = string
+  description = "Private DNS zone name for storage"
+  default = null
+  nullable = true
+}
+
 
 
 # DNS Provider Configuration
