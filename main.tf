@@ -61,6 +61,8 @@ resource "azurerm_windows_function_app" "function" {
     type = "SystemAssigned"
   }
 
+  virtual_network_subnet_id = lenght(var.virtual_network_subnet_ids_integration) > 0 ? var.virtual_network_subnet_ids_integration[0] : null
+
   dynamic "auth_settings" {
     for_each = toset(var.auth_settings != null ? [1] : [])
     content {
@@ -88,22 +90,30 @@ resource "azurerm_windows_function_app" "function" {
       dotnet_version = "6"
     }
 
-    dynamic "ip_restriction" {
-      for_each = local.function_ip_restrictions
-      content {
-        ip_address                = ip_restriction.value.ip_address
-        virtual_network_subnet_id = ip_restriction.value.virtual_network_subnet_id
-      }
-    }
+    #dynamic "ip_restriction" {
+    #  for_each = local.function_ip_restrictions
+    #  content {
+    #    ip_address                = ip_restriction.value.ip_address
+    #    virtual_network_subnet_id = ip_restriction.value.virtual_network_subnet_id
+    #  }
+    #}
+
+    #dynamic "scm_ip_restriction" {
+    #  for_each = local.function_ip_restrictions
+    #  content {
+    #    ip_address                = ip_restriction.value.ip_address
+    #    virtual_network_subnet_id = ip_restriction.value.virtual_network_subnet_id
+    #  }
+    #}
   }
 }
 
-resource "azurerm_app_service_virtual_network_swift_connection" "swift_connection" {
-  for_each = local.virtual_network_subnet_ids_integration_dict
-
-  app_service_id = azurerm_windows_function_app.function.id
-  subnet_id      = each.value
-}
+#resource "azurerm_app_service_virtual_network_swift_connection" "swift_connection" {
+#  for_each = local.virtual_network_subnet_ids_integration_dict
+#
+#  app_service_id = azurerm_windows_function_app.function.id
+#  subnet_id      = each.value
+#}
 
 resource "azurerm_private_endpoint" "func-pe" {
   for_each = local.virtual_network_subnet_ids_pe_dict
