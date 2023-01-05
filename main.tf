@@ -113,12 +113,12 @@ resource "azurerm_windows_function_app" "function" {
   }
 }
 
-resource "azurerm_app_service_virtual_network_swift_connection" "swift_connection" {
-  for_each = local.virtual_network_subnet_ids_integration_dict
-
-  app_service_id = azurerm_windows_function_app.function.id
-  subnet_id      = each.value
-}
+#resource "azurerm_app_service_virtual_network_swift_connection" "swift_connection" {
+#  for_each = local.virtual_network_subnet_ids_integration_dict
+#
+#  app_service_id = azurerm_windows_function_app.function.id
+#  subnet_id      = each.value
+#}
 
 #resource "azurerm_public_ip" "pub" {
 #  for_each = local.virtual_network_subnet_ids_pe_dict
