@@ -11,8 +11,8 @@ resource "azurerm_storage_account" "storage" {
 
   network_rules {
     default_action             = "Deny"
-    ip_rules                   = len(var.allowed_ip_addresses         ) > 0 ? null : var.allowed_ip_addresses
-    virtual_network_subnet_ids = len(var.virtual_network_subnet_ids_pe) > 0 ? null : var.virtual_network_subnet_ids_pe
+    ip_rules                   = length(var.allowed_ip_addresses         ) > 0 ? null : var.allowed_ip_addresses
+    virtual_network_subnet_ids = length(var.virtual_network_subnet_ids_pe) > 0 ? null : var.virtual_network_subnet_ids_pe
   }
 }
 
