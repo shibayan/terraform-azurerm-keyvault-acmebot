@@ -13,16 +13,6 @@ output "allowed_ip_addresses" {
   description = "IP addresses that are allowed to access the Acmebot UI."
 }
 
-output "vnet_subnet_int_id" {
-  value       = azurerm_subnet.vnet_int.name
-  description = "VNET Subnet Id for Integration"
-}
-
-output "vnet_subnet_pe_id" {
-  value       = azurerm_subnet.vnet_pe.id
-  description = "VNET Subnet Id for Private Endpoint"
-}
-
 output "private_endpoint_function_id" {
   value       = azurerm_private_endpoint.func-pe.id
   description = "Private Endpoint Function Id"
