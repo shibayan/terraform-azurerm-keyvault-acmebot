@@ -150,17 +150,6 @@ resource "azurerm_private_endpoint" "sto-pe" {
 resource "azurerm_private_dns_a_record" "dns_a_storage_blob" {
   for_each            = local.virtual_network_subnet_ids_pe_dict
 
-  #for_each            = flatten([
-  #  for k, pe in virtual_network_subnet_ids_pe_dict: [
-  #    for l, dns_config in pe.custom_dns_configs: {
-  #      "${k}-${l}" = {
-  #        fqdn         = dns_config.fqdn
-  #        ip_addresses = dns_config.ip_addresses
-  #      }
-  #    }
-  #  ]
-  #])
-
   zone_name           = var.private_dns_zone_storage_blob_name
   resource_group_name = var.private_dns_zone_rg
   ttl                 = 300
@@ -173,19 +162,22 @@ resource "azurerm_private_dns_a_record" "dns_a_storage_blob" {
 }
 
 resource "azurerm_private_dns_a_record" "dns_a_function_web" {
-  for_each            = flatten([
-    for pe in azurerm_private_endpoint.func-pe: [
-      for dns_config in pe.custom_dns_configs: {
-        (dns_config.fqdn) = dns_config.ip_addresses
+  for_each            = merge(flatten([
+    for k, v in local.virtual_network_subnet_ids_pe_dict: [
+      for l suffix in [0 ,1]: {
+        "${k}-${l}" = {
+          key    = k
+          conf   = l
+        }
       }
     ]
-  ])
+  ]))
 
   zone_name           = var.private_dns_zone_function_web_name
   resource_group_name = var.private_dns_zone_rg
   ttl                 = 300
-  name                = replace(each.key, ".azurewebsites.net", "")
-  records             = each.value
+  name                = azurerm_private_endpoint.func-pe[each.value.key].custom_dns_configs[each.value.conf].fqdn
+  records             = azurerm_private_endpoint.func-pe[each.value.key].custom_dns_configs[each.value.conf].ip_addresses
 
   depends_on = [
     azurerm_private_endpoint.func-pe
