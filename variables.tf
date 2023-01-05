@@ -148,10 +148,7 @@ variable "virtual_network_subnet_ids_pe" {
   default = []
 }
 
-locals {
-  virtual_network_subnet_ids_integration_dict = {for i, v in var.virtual_network_subnet_ids_integration: i => v}
-  virtual_network_subnet_ids_pe_dict          = {for i, v in var.virtual_network_subnet_ids_pe         : i => v}
-}
+
 
 # DNS Provider Configuration
 variable "azure_dns" {
@@ -302,9 +299,17 @@ locals {
     local.trans_ip,
     local.webhook_url,
   )
+}
 
-  function_ip_restrictions = merge(
-    for v in var.allowed_ip_addresses                  : {"ip_address" =>    v, "virtual_network_subnet_id" => null},
-    for v in var.virtual_network_subnet_ids_integration: {"ip_address" => null, "virtual_network_subnet_id" =>    v}
-  )
+locals {
+  virtual_network_subnet_ids_integration_dict = {for i, v in var.virtual_network_subnet_ids_integration: i => v}
+  virtual_network_subnet_ids_pe_dict          = {for i, v in var.virtual_network_subnet_ids_pe         : i => v}
+
+  function_ip_restrictions = {
+    for l, w in :
+      merge(
+      for v in var.allowed_ip_addresses                  : {"ip_address" =>    v, "virtual_network_subnet_id" => null},
+      for v in var.virtual_network_subnet_ids_integration: {"ip_address" => null, "virtual_network_subnet_id" =>    v}
+    ): l => w
+  }
 }
