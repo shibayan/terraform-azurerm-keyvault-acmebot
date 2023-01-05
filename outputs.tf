@@ -56,7 +56,7 @@ output "storage_private_endpoint_id" {
 
 output "storage_private_endpoint_dns_configs" {
   value       = {
-    for k, pe in azurerm_private_endpoint.sto-pe : k => pe.custom_dns_configs
+    for k, pe in azurerm_private_endpoint.sto-pe : k => { fqdn = pe.custom_dns_configs.fqdn, ip_addresses = pe.custom_dns_configs.ip_addresses }
   }
   description = "Private Endpoint Storage Custom DNS Configs"
 }
@@ -87,7 +87,7 @@ output "function_private_endpoint_id" {
 
 output "function_private_endpoint_dns_configs" {
   value       = {
-    for k, pe in azurerm_private_endpoint.func-pe : k => pe.custom_dns_configs
+    for k, pe in azurerm_private_endpoint.func-pe : k => { fqdn = pe.custom_dns_configs.fqdn, ip_addresses = pe.custom_dns_configs.ip_addresses }
   }
   description = "Private Endpoint Function Custom DNS Configs"
 }
