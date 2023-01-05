@@ -150,8 +150,8 @@ resource "azurerm_private_endpoint" "sto-pe" {
 resource "azurerm_private_dns_a_record" "dns_a_storage_blob" {
   for_each            = flatten([
     for k, pe in azurerm_private_endpoint.sto-pe: [
-      for dns_config in pe.custom_dns_configs: {
-        k = {
+      for l, dns_config in pe.custom_dns_configs: {
+        "${k}-${l}" = {
           fqdn         = dns_config.fqdn
           ip_addresses = dns_config.ip_addresses
         }
