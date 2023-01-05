@@ -61,6 +61,17 @@ output "storage_private_endpoint_dns_configs" {
   description = "Private Endpoint Storage Custom DNS Configs"
 }
 
+output "storage_private_dns_a" {
+    value = {
+        for dns in azurerm_private_dns_a_record.dns_a_storage_blob: dns.name => {
+            "name"   : dns.name,
+            "id"     : dns.id,
+            "records": dns.records
+        }
+    }
+}
+
+
 
 
 output "function_id" {
@@ -100,4 +111,14 @@ output "function_default_hostname" {
 output "function_ip_restrictions" {
   value       = local.function_ip_restrictions
   description = "IP restriction for Function"
+}
+
+output "function_private_dns_a" {
+    value = {
+        for dns in azurerm_private_dns_a_record.dns_a_function_web: dns.name => {
+            "name"   : dns.name,
+            "id"     : dns.id,
+            "records": dns.records
+        }
+    }
 }
