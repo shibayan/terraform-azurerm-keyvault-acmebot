@@ -148,13 +148,13 @@ resource "azurerm_private_endpoint" "sto-pe" {
 }
 
 resource "azurerm_private_dns_a_record" "dns_a_storage_blob" {
-  for_each            = flatten(
+  for_each            = flatten([
     for pe in azurerm_private_endpoint.sto-pe: [
       for dns_config in pe.dns_configs: {
-        (dns_config.fqdn) = dns_config.ip_addresses
+        (dns_config.fqdn) => dns_config.ip_addresses
       }
     ]
-  )
+  ])
 
   zone_name           = var.private_dns_zone_storage_blob_name
   resource_group_name = var.private_dns_zone_rg
@@ -168,13 +168,13 @@ resource "azurerm_private_dns_a_record" "dns_a_storage_blob" {
 }
 
 resource "azurerm_private_dns_a_record" "dns_a_function_web" {
-  for_each            = flatten(
+  for_each            = flatten([
     for pe in azurerm_private_endpoint.func-pe: [
       for dns_config in pe.dns_configs: {
-        (dns_config.fqdn) = dns_config.ip_addresses
+        (dns_config.fqdn) => dns_config.ip_addresses
       }
     ]
-  )
+  ])
 
   zone_name           = var.private_dns_zone_function_web_name
   resource_group_name = var.private_dns_zone_rg
