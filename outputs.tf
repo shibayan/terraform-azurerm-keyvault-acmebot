@@ -57,6 +57,6 @@ output "function_default_hostname" {
 }
 
 output "function_ip_restrictions" {
-  value = function_ip_restrictions
+  value       = local.function_ip_restrictions
   description = "IP restriction for Function"
 }
