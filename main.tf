@@ -105,47 +105,47 @@ resource "azurerm_app_service_virtual_network_swift_connection" "swift_connectio
   subnet_id      = each.value
 }
 
-resource "azurerm_public_ip" "pub" {
-  for_each = local.virtual_network_subnet_ids_pe_dict
+#resource "azurerm_public_ip" "pub" {
+#  for_each = local.virtual_network_subnet_ids_pe_dict
+#
+#  name                = "${var.function_app_name}-public-ip"
+#  location            = var.location
+#  resource_group_name = var.resource_group_name
+#  sku                 = "Standard"
+#  allocation_method   = "Static"
+#}
 
-  name                = "${var.function_app_name}-public-ip"
-  location            = var.location
-  resource_group_name = var.resource_group_name
-  sku                 = "Standard"
-  allocation_method   = "Static"
-}
+#resource "azurerm_lb" "lb" {
+#  for_each = local.virtual_network_subnet_ids_pe_dict
+#
+#  name                   = "${var.function_app_name}-lb"
+#  sku                    = "Standard"
+#  location               = var.location
+#  resource_group_name    = var.resource_group_name
+#
+#  frontend_ip_configuration {
+#    name                 = azurerm_public_ip.pub[each.key].name
+#    public_ip_address_id = azurerm_public_ip.pub[each.key].id
+#  }
+#}
 
-resource "azurerm_lb" "lb" {
-  for_each = local.virtual_network_subnet_ids_pe_dict
-
-  name                   = "${var.function_app_name}-lb"
-  sku                    = "Standard"
-  location               = var.location
-  resource_group_name    = var.resource_group_name
-
-  frontend_ip_configuration {
-    name                 = azurerm_public_ip.pub[each.key].name
-    public_ip_address_id = azurerm_public_ip.pub[each.key].id
-  }
-}
-
-resource "azurerm_private_link_service" "pls" {
-  for_each = local.virtual_network_subnet_ids_pe_dict
-
-  name                = "${var.function_app_name}-privatelink"
-  location            = var.location
-  resource_group_name = var.resource_group_name
-
-  nat_ip_configuration {
-    name      = "${var.function_app_name}-privatelink-nat"
-    primary   = true
-    subnet_id = each.value
-  }
-
-  load_balancer_frontend_ip_configuration_ids = [
-    azurerm_lb.lb[each.key].frontend_ip_configuration.0.id,
-  ]
-}
+#resource "azurerm_private_link_service" "pls" {
+#  for_each = local.virtual_network_subnet_ids_pe_dict
+#
+#  name                = "${var.function_app_name}-privatelink"
+#  location            = var.location
+#  resource_group_name = var.resource_group_name
+#
+#  nat_ip_configuration {
+#    name      = "${var.function_app_name}-privatelink-nat"
+#    primary   = true
+#    subnet_id = each.value
+#  }
+#
+#  load_balancer_frontend_ip_configuration_ids = [
+#    azurerm_lb.lb[each.key].frontend_ip_configuration.0.id,
+#  ]
+#}
 
 resource "azurerm_private_endpoint" "func-pe" {
   for_each = local.virtual_network_subnet_ids_pe_dict
@@ -178,4 +178,26 @@ resource "azurerm_private_endpoint" "sto-pe" {
     is_manual_connection           = false
     subresource_names              = ["blob"]
   }
+}
+
+resource "azurerm_private_dns_zone_virtual_network_link" "network_link_func" {
+  name                  = "${var.function_app_name}-netlink"
+  resource_group_name   = var.resource_group_name
+  private_dns_zone_name = local.private_dns_zone_func_name
+  virtual_network_id    = local.private_dns_zone_func_network_id
+}
+
+resource "azurerm_private_dns_zone_virtual_network_link" "network_link_sto" {
+  name                  = "${var.storage_account_name}-netlink"
+  resource_group_name   = var.resource_group_name
+  private_dns_zone_name = local.private_dns_zone_storage_name
+  virtual_network_id    = local.private_dns_zone_storage_network_id
+}
+
+locals {
+  private_dns_zone_func_name          = "privatelink.web.core.windows.net"
+  private_dns_zone_func_network_id    = "/subscriptions/22ddb27a-140e-4feb-8111-61bf1f76f06e/resourceGroups/BejoResearchFirewall/providers/Microsoft.Network/virtualNetworks/Research-vnet"
+
+  private_dns_zone_storage_name       = "privatelink.blob.core.windows.net"
+  private_dns_zone_storage_network_id = "/subscriptions/22ddb27a-140e-4feb-8111-61bf1f76f06e/resourceGroups/BejoResearchFirewall/providers/Microsoft.Network/virtualNetworks/Research-vnet"
 }
