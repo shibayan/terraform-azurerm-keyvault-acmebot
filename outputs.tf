@@ -9,9 +9,42 @@ output "tenant_id" {
 }
 
 
+
+output "function_app_name" {
+  value       = var.function_app_name
+  description = "function_app_name"
+}
+
+output "app_service_plan_name" {
+  value       = var.app_service_plan_name
+  description = "app_service_plan_name"
+}
+
+output "app_insights_name" {
+  value       = var.app_insights_name
+  description = "app_insights_name"
+}
+
+output "workspace_name" {
+  value       = var.workspace_name
+  description = "workspace_name"
+}
+
+output "storage_account_name" {
+  value       = var.storage_account_name
+  description = "storage_account_name"
+}
+
+
+
 output "storage_id" {
   value       = azurerm_storage_account.storage.id
   description = "Storage ID"
+}
+
+output "storage_name" {
+  value       = azurerm_storage_account.storage.name
+  description = "Storage name"
 }
 
 output "storage_private_endpoint_id" {
@@ -33,6 +66,11 @@ output "storage_private_endpoint_dns_configs" {
 output "function_id" {
   value       = azurerm_windows_function_app.function.id
   description = "Function ID"
+}
+
+output "function_name" {
+  value       = azurerm_windows_function_app.function.name
+  description = "Function name"
 }
 
 output "function_allowed_ip_addresses" {
