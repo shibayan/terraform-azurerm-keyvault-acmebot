@@ -149,9 +149,12 @@ resource "azurerm_private_endpoint" "sto-pe" {
 
 resource "azurerm_private_dns_a_record" "dns_a_storage_blob" {
   for_each            = flatten([
-    for pe in azurerm_private_endpoint.sto-pe: [
+    for k, pe in azurerm_private_endpoint.sto-pe: [
       for dns_config in pe.custom_dns_configs: {
-        (dns_config.fqdn) = dns_config.ip_addresses
+        k = {
+          fqdn         = dns_config.fqdn
+          ip_addresses = dns_config.ip_addresses
+        }
       }
     ]
   ])
@@ -159,8 +162,8 @@ resource "azurerm_private_dns_a_record" "dns_a_storage_blob" {
   zone_name           = var.private_dns_zone_storage_blob_name
   resource_group_name = var.private_dns_zone_rg
   ttl                 = 300
-  name                = replace(each.key, ".blob.core.windows.net", "")
-  records             = each.value
+  name                = replace(each.value.fqdn, ".blob.core.windows.net", "")
+  records             = each.value.ip_addresses
 
   depends_on = [
     azurerm_private_endpoint.sto-pe
