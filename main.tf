@@ -61,7 +61,7 @@ resource "azurerm_windows_function_app" "function" {
     type = "SystemAssigned"
   }
 
-  virtual_network_subnet_id = lenght(var.virtual_network_subnet_ids_integration) > 0 ? var.virtual_network_subnet_ids_integration[0] : null
+  virtual_network_subnet_id = length(var.virtual_network_subnet_ids_integration) > 0 ? var.virtual_network_subnet_ids_integration[0] : null
 
   dynamic "auth_settings" {
     for_each = toset(var.auth_settings != null ? [1] : [])
