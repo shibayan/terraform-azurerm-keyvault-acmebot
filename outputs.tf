@@ -55,3 +55,8 @@ output "function_default_hostname" {
   value       = azurerm_windows_function_app.function.default_hostname
   description = "Function Default Hostname"
 }
+
+output "function_ip_restrictions" {
+  value = function_ip_restrictions
+  description = "IP restriction for Function"
+}
