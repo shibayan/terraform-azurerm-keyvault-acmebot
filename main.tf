@@ -39,6 +39,9 @@ resource "azurerm_application_insights" "insights" {
   location            = var.location
   application_type    = "web"
   workspace_id        = azurerm_log_analytics_workspace.workspace.id
+  depends_on          = [
+    azurerm_log_analytics_workspace.workspace
+  ]
 }
 
 resource "azurerm_windows_function_app" "function" {
@@ -90,13 +93,13 @@ resource "azurerm_windows_function_app" "function" {
       dotnet_version = "6"
     }
 
-    #dynamic "ip_restriction" {
-    #  for_each = local.function_ip_restrictions
-    #  content {
-    #    ip_address                = ip_restriction.value.ip_address
-    #    virtual_network_subnet_id = ip_restriction.value.virtual_network_subnet_id
-    #  }
-    #}
+    dynamic "ip_restriction" {
+      for_each = local.function_ip_restrictions
+      content {
+        ip_address                = ip_restriction.value.ip_address
+        virtual_network_subnet_id = ip_restriction.value.virtual_network_subnet_id
+      }
+    }
 
     #dynamic "scm_ip_restriction" {
     #  for_each = local.function_ip_restrictions
@@ -106,14 +109,13 @@ resource "azurerm_windows_function_app" "function" {
     #  }
     #}
   }
-}
 
-#resource "azurerm_app_service_virtual_network_swift_connection" "swift_connection" {
-#  for_each = local.virtual_network_subnet_ids_integration_dict
-#
-#  app_service_id = azurerm_windows_function_app.function.id
-#  subnet_id      = each.value
-#}
+  depends_on = [
+    azurerm_storage_account.storage
+    azurerm_application_insights.insights
+    azurerm_service_plan.serverfarm
+  ]
+}
 
 resource "azurerm_private_endpoint" "func-pe" {
   for_each = local.virtual_network_subnet_ids_pe_dict
@@ -129,6 +131,10 @@ resource "azurerm_private_endpoint" "func-pe" {
     is_manual_connection           = false
     subresource_names              = ["sites"]
   }
+
+  depends_on = [
+    azurerm_windows_function_app.function
+  ]
 }
 
 resource "azurerm_private_endpoint" "sto-pe" {
@@ -145,6 +151,10 @@ resource "azurerm_private_endpoint" "sto-pe" {
     is_manual_connection           = false
     subresource_names              = ["blob"]
   }
+
+  depends_on = [
+    azurerm_storage_account.storage
+  ]
 }
 
 resource "azurerm_private_dns_a_record" "dns_a_storage_blob" {
