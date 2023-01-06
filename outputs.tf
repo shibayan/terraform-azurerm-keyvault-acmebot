@@ -68,7 +68,7 @@ output "storage_private_endpoint_dns_configs" {
         fqdn         = azurerm_private_endpoint.sto-queue-pe[k].custom_dns_configs[0].fqdn,
         ip_addresses = azurerm_private_endpoint.sto-queue-pe[k].custom_dns_configs[0].ip_addresses
       }
-    ]
+    }
   }
   description = "Private Endpoint Storage Custom DNS Configs"
 }
