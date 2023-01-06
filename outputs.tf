@@ -48,10 +48,10 @@ output "storage_name" {
 }
 
 output "storage_private_endpoint_id" {
-  value       = flatten([
-    for pes in [azurerm_private_endpoint.sto-blob-pe, azurerm_private_endpoint.sto-queue-pe]: [
-      for pe in pes : pe.id
-    ]
+  value       = merge([
+    for k, pes in azurerm_private_endpoint.sto-pe: {
+      for pe in pes: k => pe.id
+    }
   ])
 
   description = "Private Endpoint Storage ID"
