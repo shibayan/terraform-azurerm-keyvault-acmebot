@@ -169,7 +169,7 @@ locals {
 }
 
 resource "azurerm_private_endpoint" "sto-pe" {
-  for_each            = storage_pe
+  for_each            = local.storage_pe
 
   name                = "${var.storage_account_name}-${each.value.subresource_name}-pe"
   location            = var.location
@@ -190,9 +190,9 @@ resource "azurerm_private_endpoint" "sto-pe" {
 }
 
 resource "azurerm_private_dns_a_record" "dns_a_storage" {
-  for_each            = storage_pe
+  for_each            = local.storage_pe
 
-  zone_name           = storage_pe.value.private_dns_zone_name
+  zone_name           = each.value.private_dns_zone_name
   resource_group_name = var.private_dns_zone_rg
   name                = var.storage_account_name
   records             = azurerm_private_endpoint.sto-pe[each.key].custom_dns_configs[0].ip_addresses
