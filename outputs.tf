@@ -55,14 +55,14 @@ output "storage_private_endpoint_id" {
 }
 
 output "storage_private_endpoint_dns_configs" {
-  value       = (
+  value       = flatten([
     for pes in [azurerm_private_endpoint.sto-blob-pe, azurerm_private_endpoint.sto-queue-pe]: [
       for pe in pes : {
         fqdn         = pe.custom_dns_configs[0].fqdn,
         ip_addresses = pe.custom_dns_configs[0].ip_addresses
       }
     ]
-  )
+  ])
   description = "Private Endpoint Storage Custom DNS Configs"
 }
 
