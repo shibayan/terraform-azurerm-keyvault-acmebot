@@ -342,7 +342,7 @@ locals {
   }
 }
 
-variables "tags" {
+variable "tags" {
   type = map
   nullable = true
   default = {}
