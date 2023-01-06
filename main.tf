@@ -247,11 +247,11 @@ resource "azurerm_private_dns_a_record" "dns_a_storage_blob" {
   resource_group_name = var.private_dns_zone_rg
   ttl                 = 300
   name                = var.storage_account_name
-  records             = azurerm_private_endpoint.sto-blob-pe[each.key].custom_dns_configs[0].ip_addresses
+  records             = azurerm_private_endpoint.sto-pe[each.key].custom_dns_configs["blob"].ip_addresses
   tags                = merge(var.tags, {})
 
   depends_on = [
-    azurerm_private_endpoint.sto-blob-pe
+    azurerm_private_endpoint.sto-pe
   ]
 }
 
@@ -262,11 +262,26 @@ resource "azurerm_private_dns_a_record" "dns_a_storage_queue" {
   resource_group_name = var.private_dns_zone_rg
   ttl                 = 300
   name                = var.storage_account_name
-  records             = azurerm_private_endpoint.sto-queue-pe[each.key].custom_dns_configs[0].ip_addresses
+  records             = azurerm_private_endpoint.sto-queue-pe[each.key].custom_dns_configs["queue"].ip_addresses
   tags                = merge(var.tags, {})
 
   depends_on = [
-    azurerm_private_endpoint.sto-queue-pe
+    azurerm_private_endpoint.sto-pe
+  ]
+}
+
+resource "azurerm_private_dns_a_record" "dns_a_storage_table" {
+  for_each            = local.virtual_network_subnet_ids_pe_dict
+
+  zone_name           = var.private_dns_zone_storage_table_name
+  resource_group_name = var.private_dns_zone_rg
+  ttl                 = 300
+  name                = var.storage_account_name
+  records             = azurerm_private_endpoint.sto-queue-pe[each.key].custom_dns_configs["table"].ip_addresses
+  tags                = merge(var.tags, {})
+
+  depends_on = [
+    azurerm_private_endpoint.sto-pe
   ]
 }
 
