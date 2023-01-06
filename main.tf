@@ -162,16 +162,18 @@ resource "azurerm_private_dns_a_record" "dns_a_storage_blob" {
 }
 
 resource "azurerm_private_dns_a_record" "dns_a_function_web" {
-  for_each            = merge(flatten([
-    for k, v in local.virtual_network_subnet_ids_pe_dict: [
-      for l in [0, 1]: {
-        "${k}-${l}" = {
-          key    = k
-          conf   = l
+  for_each            = merge(
+    flatten([
+      for k, v in local.virtual_network_subnet_ids_pe_dict: [
+        for l in [0, 1]: {
+          "${k}-${l}" = {
+            key    = k
+            conf   = l
+          }
         }
-      }
-    ]
-  ]))
+      ]
+    ])
+  ...)
 
   zone_name           = var.private_dns_zone_function_web_name
   resource_group_name = var.private_dns_zone_rg
