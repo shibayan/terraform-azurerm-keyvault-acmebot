@@ -57,15 +57,15 @@ output "storage_private_endpoint_id" {
 }
 
 output "storage_private_endpoint_dns_configs" {
-  value       = merge(concat([
-    for k, subnet_id in local.virtual_network_subnet_ids_pe_dict: {
-      for subresource_name in ["blob", "queue", "table"]:
-        "${k}-${subresource_name}" => {
+  value       = {
+    for k, subnet_id in local.virtual_network_subnet_ids_pe_dict:
+      k => for subresource_name in ["blob", "queue", "table"]: {
+        subresource_name => {
           fqdn         = azurerm_private_endpoint.sto-pe["${k}-${subresource_name}"].custom_dns_configs[0].fqdn,
           ip_addresses = azurerm_private_endpoint.sto-pe["${k}-${subresource_name}"].custom_dns_configs[0].ip_addresses
-      }
+        }
     }
-  ]))
+  }
   description = "Private Endpoint Storage Custom DNS Configs"
 }
 
