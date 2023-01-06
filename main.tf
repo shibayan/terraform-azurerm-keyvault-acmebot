@@ -178,8 +178,8 @@ resource "azurerm_private_dns_a_record" "dns_a_function_web" {
   zone_name           = var.private_dns_zone_function_web_name
   resource_group_name = var.private_dns_zone_rg
   ttl                 = 300
-  name                = azurerm_private_endpoint.func-pe[each.value.key].custom_dns_configs[each.value.conf].fqdn
-  records             = azurerm_private_endpoint.func-pe[each.value.key].custom_dns_configs[each.value.conf].ip_addresses
+  name                = replace(azurerm_private_endpoint.func-pe[each.value.key].custom_dns_configs[each.value.conf].fqdn, "privatelink.azurewebsites.net", "")
+  records             =         azurerm_private_endpoint.func-pe[each.value.key].custom_dns_configs[each.value.conf].ip_addresses
 
   depends_on = [
     azurerm_private_endpoint.func-pe
