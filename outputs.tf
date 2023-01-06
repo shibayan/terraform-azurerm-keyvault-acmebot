@@ -72,18 +72,15 @@ output "storage_private_endpoint_dns_configs" {
 
 output "storage_private_dns_a" {
   value = {
-    for k, v in local.virtual_network_subnet_ids_pe_dict: k => {
-      "blob": {
-        "name"   : azurerm_private_dns_a_record.dns_a_storage_blob[k].name,
-        "id"     : azurerm_private_dns_a_record.dns_a_storage_blob[k].id,
-        "records": azurerm_private_dns_a_record.dns_a_storage_blob[k].records
-      },
-      "queue": {
-        "name"   : azurerm_private_dns_a_record.dns_a_storage_queue[k].name,
-        "id"     : azurerm_private_dns_a_record.dns_a_storage_queue[k].id,
-        "records": azurerm_private_dns_a_record.dns_a_storage_queue[k].records
+    for k, subnet_id in local.virtual_network_subnet_ids_pe_dict:
+      k => {
+        for subresource_name in ["blob", "queue", "table"]:
+          subresource_name => {
+            "name"   : azurerm_private_dns_a_record.dns_a_storage["${k}-${subresource_name}"].name,
+            "id"     : azurerm_private_dns_a_record.dns_a_storage["${k}-${subresource_name}"].id,
+            "records": azurerm_private_dns_a_record.dns_a_storage["${k}-${subresource_name}"].records
+          }
       }
-    }
   }
 }
 

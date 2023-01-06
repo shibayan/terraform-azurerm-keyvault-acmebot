@@ -146,18 +146,30 @@ resource "azurerm_private_endpoint" "func-pe" {
   ]
 }
 
-resource "azurerm_private_endpoint" "sto-pe" {
-  for_each            = merge(concat(
+locals {
+  private_dns_zone_storage = {
+    "blob"  = var.private_dns_zone_storage_blob_name,
+    "queue" = var.private_dns_zone_storage_queue_name,
+    "table" = var.private_dns_zone_storage_table_name,
+  }
+
+  storage_pe = merge(concat(
     [
-      for k, subnet_id in local.virtual_network_subnet_ids_pe_dict: {
+      for subnet_pos, subnet_id in local.virtual_network_subnet_ids_pe_dict: {
         for subresource_name in ["blob", "queue", "table"]:
-          "${k}-${subresource_name}" => {
-            "subnet_id"        = subnet_id,
-            "subresource_name" = subresource_name
+          "${sebnet_pos}-${subresource_name}" => {
+            "subnet_pos"            = subnet_pos,
+            "subnet_id"             = subnet_id,
+            "subresource_name"      = subresource_name,
+            "private_dns_zone_name" = local.private_dns_zone_storage[subresource_name]
         }
       }
     ]
   )...)
+}
+
+resource "azurerm_private_endpoint" "sto-pe" {
+  for_each            = storage_pe
 
   name                = "${var.storage_account_name}-${each.value.subresource_name}-pe"
   location            = var.location
@@ -177,113 +189,21 @@ resource "azurerm_private_endpoint" "sto-pe" {
   ]
 }
 
-# resource "azurerm_private_endpoint" "sto-blob-pe" {
-#   for_each            = local.virtual_network_subnet_ids_pe_dict
+resource "azurerm_private_dns_a_record" "dns_a_storage" {
+  for_each            = storage_pe
 
-#   name                = "${var.storage_account_name}-blob-pe"
-#   location            = var.location
-#   resource_group_name = var.resource_group_name
-#   subnet_id           = each.value
-#   tags                = merge(var.tags, {})
-
-#   private_service_connection {
-#     name                           = "${var.storage_account_name}-psc"
-#     private_connection_resource_id = azurerm_storage_account.storage.id
-#     is_manual_connection           = false
-#     subresource_names              = ["blob"]
-#   }
-
-#   depends_on = [
-#     azurerm_storage_account.storage
-#   ]
-# }
-
-# resource "azurerm_private_endpoint" "sto-queue-pe" {
-#   for_each            = local.virtual_network_subnet_ids_pe_dict
-
-#   name                = "${var.storage_account_name}-queue-pe"
-#   location            = var.location
-#   resource_group_name = var.resource_group_name
-#   subnet_id           = each.value
-#   tags                = merge(var.tags, {})
-
-#   private_service_connection {
-#     name                           = "${var.storage_account_name}-psc"
-#     private_connection_resource_id = azurerm_storage_account.storage.id
-#     is_manual_connection           = false
-#     subresource_names              = ["queue"]
-#   }
-
-#   depends_on = [
-#     azurerm_storage_account.storage
-#   ]
-# }
-
-# resource "azurerm_private_endpoint" "sto-table-pe" {
-#   for_each            = local.virtual_network_subnet_ids_pe_dict
-
-#   name                = "${var.storage_account_name}-queue-pe"
-#   location            = var.location
-#   resource_group_name = var.resource_group_name
-#   subnet_id           = each.value
-#   tags                = merge(var.tags, {})
-
-#   private_service_connection {
-#     name                           = "${var.storage_account_name}-psc"
-#     private_connection_resource_id = azurerm_storage_account.storage.id
-#     is_manual_connection           = false
-#     subresource_names              = ["table"]
-#   }
-
-#   depends_on = [
-#     azurerm_storage_account.storage
-#   ]
-# }
-
-resource "azurerm_private_dns_a_record" "dns_a_storage_blob" {
-  for_each            = local.virtual_network_subnet_ids_pe_dict
-
-  zone_name           = var.private_dns_zone_storage_blob_name
+  zone_name           = storage_pe.value.private_dns_zone_name
   resource_group_name = var.private_dns_zone_rg
-  ttl                 = 300
   name                = var.storage_account_name
-  records             = azurerm_private_endpoint.sto-pe["${each.key}-queue"].custom_dns_configs[0].ip_addresses
+  records             = azurerm_private_endpoint.sto-pe[each.key].custom_dns_configs[0].ip_addresses
   tags                = merge(var.tags, {})
+  ttl                 = 300
 
   depends_on = [
     azurerm_private_endpoint.sto-pe
   ]
 }
 
-resource "azurerm_private_dns_a_record" "dns_a_storage_queue" {
-  for_each            = local.virtual_network_subnet_ids_pe_dict
-
-  zone_name           = var.private_dns_zone_storage_queue_name
-  resource_group_name = var.private_dns_zone_rg
-  ttl                 = 300
-  name                = var.storage_account_name
-  records             = azurerm_private_endpoint.sto-pe["${each.key}-queue"].custom_dns_configs[0].ip_addresses
-  tags                = merge(var.tags, {})
-
-  depends_on = [
-    azurerm_private_endpoint.sto-pe
-  ]
-}
-
-resource "azurerm_private_dns_a_record" "dns_a_storage_table" {
-  for_each            = local.virtual_network_subnet_ids_pe_dict
-
-  zone_name           = var.private_dns_zone_storage_table_name
-  resource_group_name = var.private_dns_zone_rg
-  ttl                 = 300
-  name                = var.storage_account_name
-  records             = azurerm_private_endpoint.sto-pe["${each.key}-table"].custom_dns_configs[0].ip_addresses
-  tags                = merge(var.tags, {})
-
-  depends_on = [
-    azurerm_private_endpoint.sto-pe
-  ]
-}
 
 resource "azurerm_private_dns_a_record" "dns_a_function_web" {
   for_each            = merge(
