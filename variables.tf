@@ -164,10 +164,18 @@ variable "private_dns_zone_function_web_name" {
 
 variable "private_dns_zone_storage_blob_name" {
   type = string
-  description = "Private DNS zone name for storage"
+  description = "Private DNS zone name for storage blob"
   default = null
   nullable = true
 }
+
+variable "private_dns_zone_storage_queue_name" {
+  type = string
+  description = "Private DNS zone name for storage queue"
+  default = null
+  nullable = true
+}
+
 
 
 

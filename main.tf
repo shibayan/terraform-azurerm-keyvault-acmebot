@@ -151,7 +151,7 @@ resource "azurerm_private_endpoint" "sto-pe" {
     name                           = "${var.storage_account_name}-psc"
     private_connection_resource_id = azurerm_storage_account.storage.id
     is_manual_connection           = false
-    subresource_names              = ["blob"]
+    subresource_names              = ["blob", "queue"]
   }
 
   depends_on = [
@@ -163,6 +163,20 @@ resource "azurerm_private_dns_a_record" "dns_a_storage_blob" {
   for_each            = local.virtual_network_subnet_ids_pe_dict
 
   zone_name           = var.private_dns_zone_storage_blob_name
+  resource_group_name = var.private_dns_zone_rg
+  ttl                 = 300
+  name                = var.storage_account_name
+  records             = azurerm_private_endpoint.sto-pe[each.key].custom_dns_configs[0].ip_addresses
+
+  depends_on = [
+    azurerm_private_endpoint.sto-pe
+  ]
+}
+
+resource "azurerm_private_dns_a_record" "dns_a_storage_queue" {
+  for_each            = local.virtual_network_subnet_ids_pe_dict
+
+  zone_name           = var.private_dns_zone_storage_queue_name
   resource_group_name = var.private_dns_zone_rg
   ttl                 = 300
   name                = var.storage_account_name
