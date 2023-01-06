@@ -15,6 +15,7 @@ resource "azurerm_storage_account" "storage" {
     virtual_network_subnet_ids = concat(
       length(var.virtual_network_subnet_ids_pe         ) > 0 ? var.virtual_network_subnet_ids_pe          : [],
       length(var.virtual_network_subnet_ids_integration) > 0 ? var.virtual_network_subnet_ids_integration : []
+    )
   }
 }
 
