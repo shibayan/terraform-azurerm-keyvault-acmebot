@@ -49,8 +49,11 @@ output "storage_name" {
 
 output "storage_private_endpoint_id" {
   value       = {
-    for k, pe in azurerm_private_endpoint.sto-pe:
-      k => pe.id
+    for subnet_pos, subnet_id in local.virtual_network_subnet_ids_pe_dict:
+      subnet_pos => {
+        for subresource_name in ["blob", "queue", "table"]:
+          subresource_name => azurerm_private_endpoint.sto-pe["${subnet_pos}-${subresource_name}"].id
+      }
   }
 
   description = "Private Endpoint Storage ID"
