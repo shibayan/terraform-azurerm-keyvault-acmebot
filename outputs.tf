@@ -58,12 +58,12 @@ output "storage_private_endpoint_id" {
 
 output "storage_private_endpoint_dns_configs" {
   value       = {
-    for k, subnet_id in local.virtual_network_subnet_ids_pe_dict:
-      k => {
+    for subnet_pos, subnet_id in local.virtual_network_subnet_ids_pe_dict:
+      subnet_pos => {
         for subresource_name in ["blob", "queue", "table"]:
           subresource_name => {
-            fqdn         = azurerm_private_endpoint.sto-pe["${k}-${subresource_name}"].custom_dns_configs[0].fqdn,
-            ip_addresses = azurerm_private_endpoint.sto-pe["${k}-${subresource_name}"].custom_dns_configs[0].ip_addresses
+            fqdn         = azurerm_private_endpoint.sto-pe["${subnet_pos}-${subresource_name}"].custom_dns_configs[0].fqdn,
+            ip_addresses = azurerm_private_endpoint.sto-pe["${subnet_pos}-${subresource_name}"].custom_dns_configs[0].ip_addresses
           }
       }
   }
@@ -72,13 +72,13 @@ output "storage_private_endpoint_dns_configs" {
 
 output "storage_private_dns_a" {
   value = {
-    for k, subnet_id in local.virtual_network_subnet_ids_pe_dict:
-      k => {
+    for subnet_pos, subnet_id in local.virtual_network_subnet_ids_pe_dict:
+      subnet_pos => {
         for subresource_name in ["blob", "queue", "table"]:
           subresource_name => {
-            "name"   : azurerm_private_dns_a_record.dns_a_storage["${k}-${subresource_name}"].name,
-            "id"     : azurerm_private_dns_a_record.dns_a_storage["${k}-${subresource_name}"].id,
-            "records": azurerm_private_dns_a_record.dns_a_storage["${k}-${subresource_name}"].records
+            "name"   : azurerm_private_dns_a_record.dns_a_storage["${subnet_pos}-${subresource_name}"].name,
+            "id"     : azurerm_private_dns_a_record.dns_a_storage["${subnet_pos}-${subresource_name}"].id,
+            "records": azurerm_private_dns_a_record.dns_a_storage["${subnet_pos}-${subresource_name}"].records
           }
       }
   }

@@ -157,7 +157,7 @@ locals {
     [
       for subnet_pos, subnet_id in local.virtual_network_subnet_ids_pe_dict: {
         for subresource_name in ["blob", "queue", "table"]:
-          "${sebnet_pos}-${subresource_name}" => {
+          "${subnet_pos}-${subresource_name}" => {
             "subnet_pos"            = subnet_pos,
             "subnet_id"             = subnet_id,
             "subresource_name"      = subresource_name,
