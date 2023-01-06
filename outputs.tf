@@ -47,30 +47,20 @@ output "storage_name" {
   description = "Storage name"
 }
 
-output "storage_private_endpoint_id" {
-  value       = {
-    for subnet_pos, subnet_id in local.virtual_network_subnet_ids_pe_dict:
-      subnet_pos => {
-        for subresource_name in ["blob", "queue", "table"]:
-          subresource_name => azurerm_private_endpoint.sto-pe["${subnet_pos}-${subresource_name}"].id
-      }
-  }
-
-  description = "Private Endpoint Storage ID"
-}
-
-output "storage_private_endpoint_dns_configs" {
+output "storage_private_endpoint" {
   value       = {
     for subnet_pos, subnet_id in local.virtual_network_subnet_ids_pe_dict:
       subnet_pos => {
         for subresource_name in ["blob", "queue", "table"]:
           subresource_name => {
-            fqdn         = azurerm_private_endpoint.sto-pe["${subnet_pos}-${subresource_name}"].custom_dns_configs[0].fqdn,
-            ip_addresses = azurerm_private_endpoint.sto-pe["${subnet_pos}-${subresource_name}"].custom_dns_configs[0].ip_addresses
+            "id"           = azurerm_private_endpoint.sto-pe["${subnet_pos}-${subresource_name}"].id
+            "fqdn"         = azurerm_private_endpoint.sto-pe["${subnet_pos}-${subresource_name}"].custom_dns_configs[0].fqdn,
+            "ip_addresses" = azurerm_private_endpoint.sto-pe["${subnet_pos}-${subresource_name}"].custom_dns_configs[0].ip_addresses
           }
       }
   }
-  description = "Private Endpoint Storage Custom DNS Configs"
+
+  description = "Private Endpoint Storage id, fqdn and ip address"
 }
 
 output "storage_private_dns_a" {
