@@ -258,6 +258,12 @@ variable "trans_ip" {
   default = null
 }
 
+variable "tags" {
+  type = map
+  nullable = true
+  default = {}
+}
+
 locals {
   external_account_binding = var.external_account_binding != null ? {
     "Acmebot:ExternalAccountBinding:KeyId"     = var.external_account_binding.key_id
@@ -344,13 +350,29 @@ locals {
   function_ip_restrictions = {
     for l, w in concat(
       [for v in var.allowed_ip_addresses                  : {"ip_address" =    v, "virtual_network_subnet_id" = null}],
+      [for v in var.virtual_network_subnet_ids_pe         : {"ip_address" = null, "virtual_network_subnet_id" =    v}]
       [for v in var.virtual_network_subnet_ids_integration: {"ip_address" = null, "virtual_network_subnet_id" =    v}]
     ): l => w
   }
+
+  private_dns_zone_storage = {
+    "blob"  = var.private_dns_zone_storage_blob_name,
+    "queue" = var.private_dns_zone_storage_queue_name,
+    "table" = var.private_dns_zone_storage_table_name,
+  }
+
+  storage_pe = merge(concat(
+    [
+      for subnet_pos, subnet_id in local.virtual_network_subnet_ids_pe_dict: {
+        for subresource_name in ["blob", "queue", "table"]:
+          "${subnet_pos}-${subresource_name}" => {
+            "subnet_pos"            = subnet_pos,
+            "subnet_id"             = subnet_id,
+            "subresource_name"      = subresource_name,
+            "private_dns_zone_name" = local.private_dns_zone_storage[subresource_name]
+        }
+      }
+    ]
+  )...)
 }
 
-variable "tags" {
-  type = map
-  nullable = true
-  default = {}
-}

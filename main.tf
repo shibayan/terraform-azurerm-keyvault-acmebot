@@ -109,13 +109,13 @@ resource "azurerm_windows_function_app" "function" {
       }
     }
 
-    #dynamic "scm_ip_restriction" {
-    #  for_each = local.function_ip_restrictions
-    #  content {
-    #    ip_address                = ip_restriction.value.ip_address
-    #    virtual_network_subnet_id = ip_restriction.value.virtual_network_subnet_id
-    #  }
-    #}
+    dynamic "scm_ip_restriction" {
+      for_each = local.function_ip_restrictions
+      content {
+        ip_address                = ip_restriction.value.ip_address
+        virtual_network_subnet_id = ip_restriction.value.virtual_network_subnet_id
+      }
+    }
   }
 
   depends_on = [
@@ -144,28 +144,6 @@ resource "azurerm_private_endpoint" "func-pe" {
   depends_on = [
     azurerm_windows_function_app.function
   ]
-}
-
-locals {
-  private_dns_zone_storage = {
-    "blob"  = var.private_dns_zone_storage_blob_name,
-    "queue" = var.private_dns_zone_storage_queue_name,
-    "table" = var.private_dns_zone_storage_table_name,
-  }
-
-  storage_pe = merge(concat(
-    [
-      for subnet_pos, subnet_id in local.virtual_network_subnet_ids_pe_dict: {
-        for subresource_name in ["blob", "queue", "table"]:
-          "${subnet_pos}-${subresource_name}" => {
-            "subnet_pos"            = subnet_pos,
-            "subnet_id"             = subnet_id,
-            "subresource_name"      = subresource_name,
-            "private_dns_zone_name" = local.private_dns_zone_storage[subresource_name]
-        }
-      }
-    ]
-  )...)
 }
 
 resource "azurerm_private_endpoint" "sto-pe" {
@@ -203,7 +181,6 @@ resource "azurerm_private_dns_a_record" "dns_a_storage" {
     azurerm_private_endpoint.sto-pe
   ]
 }
-
 
 resource "azurerm_private_dns_a_record" "dns_a_function_web" {
   for_each            = merge(
