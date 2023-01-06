@@ -176,6 +176,13 @@ variable "private_dns_zone_storage_queue_name" {
   nullable = true
 }
 
+variable "private_dns_zone_storage_table_name" {
+  type = string
+  description = "Private DNS zone name for storage table"
+  default = null
+  nullable = true
+}
+
 
 
 
