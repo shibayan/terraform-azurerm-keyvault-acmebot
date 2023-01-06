@@ -341,3 +341,9 @@ locals {
     ): l => w
   }
 }
+
+variables "tags" {
+  type = map
+  nullable = true
+  default = {}
+}

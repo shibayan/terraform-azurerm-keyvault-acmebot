@@ -8,6 +8,7 @@ resource "azurerm_storage_account" "storage" {
   enable_https_traffic_only       = true
   allow_nested_items_to_be_public = false
   min_tls_version                 = "TLS1_2"
+  tags                            = merge(var.tags, {})
 
   network_rules {
     default_action             = "Deny"
@@ -23,6 +24,7 @@ resource "azurerm_service_plan" "serverfarm" {
   name                = var.app_service_plan_name
   resource_group_name = var.resource_group_name
   location            = var.location
+  tags                = merge(var.tags, {})
 
   os_type  = "Windows"
   sku_name = var.sku_name
@@ -34,6 +36,7 @@ resource "azurerm_log_analytics_workspace" "workspace" {
   location            = var.location
   sku                 = "PerGB2018"
   retention_in_days   = 30
+  tags                = merge(var.tags, {})
 }
 
 resource "azurerm_application_insights" "insights" {
@@ -42,6 +45,7 @@ resource "azurerm_application_insights" "insights" {
   location            = var.location
   application_type    = "web"
   workspace_id        = azurerm_log_analytics_workspace.workspace.id
+  tags                = merge(var.tags, {})
   depends_on          = [
     azurerm_log_analytics_workspace.workspace
   ]
@@ -54,6 +58,7 @@ resource "azurerm_windows_function_app" "function" {
   service_plan_id            = azurerm_service_plan.serverfarm.id
   storage_account_name       = azurerm_storage_account.storage.name
   storage_account_access_key = azurerm_storage_account.storage.primary_access_key
+  tags                       = merge(var.tags, {})
 
   functions_extension_version = "~4"
   https_only                  = true
@@ -127,6 +132,7 @@ resource "azurerm_private_endpoint" "func-pe" {
   location            = var.location
   resource_group_name = var.resource_group_name
   subnet_id           = each.value
+  tags                = merge(var.tags, {})
 
   private_service_connection {
     name                           = "${var.function_app_name}-psc"
@@ -147,6 +153,7 @@ resource "azurerm_private_endpoint" "sto-pe" {
   location            = var.location
   resource_group_name = var.resource_group_name
   subnet_id           = each.value
+  tags                = merge(var.tags, {})
 
   private_service_connection {
     name                           = "${var.storage_account_name}-psc"
@@ -168,6 +175,7 @@ resource "azurerm_private_dns_a_record" "dns_a_storage_blob" {
   ttl                 = 300
   name                = var.storage_account_name
   records             = azurerm_private_endpoint.sto-pe[each.key].custom_dns_configs[0].ip_addresses
+  tags                = merge(var.tags, {})
 
   depends_on = [
     azurerm_private_endpoint.sto-pe
@@ -182,6 +190,7 @@ resource "azurerm_private_dns_a_record" "dns_a_storage_queue" {
   ttl                 = 300
   name                = var.storage_account_name
   records             = azurerm_private_endpoint.sto-pe[each.key].custom_dns_configs[0].ip_addresses
+  tags                = merge(var.tags, {})
 
   depends_on = [
     azurerm_private_endpoint.sto-pe
@@ -207,6 +216,7 @@ resource "azurerm_private_dns_a_record" "dns_a_function_web" {
   ttl                 = 300
   name                = replace(azurerm_private_endpoint.func-pe[each.value.key].custom_dns_configs[each.value.conf].fqdn, ".azurewebsites.net", "")
   records             =         azurerm_private_endpoint.func-pe[each.value.key].custom_dns_configs[each.value.conf].ip_addresses
+  tags                = merge(var.tags, {})
 
   depends_on = [
     azurerm_private_endpoint.func-pe
