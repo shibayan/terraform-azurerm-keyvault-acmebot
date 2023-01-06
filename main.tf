@@ -147,18 +147,18 @@ resource "azurerm_private_endpoint" "func-pe" {
 }
 
 resource "azurerm_private_endpoint" "sto-pe" {
-  for_each            = merge(
+  for_each            = merge(concat(
     [
-      for k, subnet_id in local.virtual_network_subnet_ids_pe_dict: {
+      for k, subnet_id in local.virtual_network_subnet_ids_pe_dict: [
         for subresource_name in ["blob", "queue", "table"]: {
           "${k}-${subresource_name}" => {
             "subnet_id" = subnet_id,
             "subresource_name" = subresource_name
           }
         }
-      }
+      ]
     ]
-  )
+  ))
 
   name                = "${var.storage_account_name}-${each.value.subresource_name}-pe"
   location            = var.location
