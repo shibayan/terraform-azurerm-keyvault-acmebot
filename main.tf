@@ -111,8 +111,8 @@ resource "azurerm_windows_function_app" "function" {
   }
 
   depends_on = [
-    azurerm_storage_account.storage
-    azurerm_application_insights.insights
+    azurerm_storage_account.storage,
+    azurerm_application_insights.insights,
     azurerm_service_plan.serverfarm
   ]
 }
