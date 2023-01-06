@@ -146,20 +146,31 @@ resource "azurerm_private_endpoint" "func-pe" {
   ]
 }
 
-resource "azurerm_private_endpoint" "sto-blob-pe" {
-  for_each            = local.virtual_network_subnet_ids_pe_dict
+resource "azurerm_private_endpoint" "sto-pe" {
+  for_each            = merge(
+    [
+      for k, subnet_id in local.virtual_network_subnet_ids_pe_dict: {
+        for subresource_name in ["blob", "queue", "table"]: {
+          "${k}-${subresource_name}" => {
+            "subnet_id" = subnet_id,
+            "subresource_name" = subresource_name
+          }
+        }
+      }
+    ]
+  )
 
-  name                = "${var.storage_account_name}-blob-pe"
+  name                = "${var.storage_account_name}-${each.value.subresource_name}-pe"
   location            = var.location
   resource_group_name = var.resource_group_name
-  subnet_id           = each.value
+  subnet_id           = each.value.subnet_id
   tags                = merge(var.tags, {})
 
   private_service_connection {
     name                           = "${var.storage_account_name}-psc"
     private_connection_resource_id = azurerm_storage_account.storage.id
     is_manual_connection           = false
-    subresource_names              = ["blob"]
+    subresource_names              = [each.value.subresource_name]
   }
 
   depends_on = [
@@ -167,26 +178,68 @@ resource "azurerm_private_endpoint" "sto-blob-pe" {
   ]
 }
 
-resource "azurerm_private_endpoint" "sto-queue-pe" {
-  for_each            = local.virtual_network_subnet_ids_pe_dict
+# resource "azurerm_private_endpoint" "sto-blob-pe" {
+#   for_each            = local.virtual_network_subnet_ids_pe_dict
 
-  name                = "${var.storage_account_name}-queue-pe"
-  location            = var.location
-  resource_group_name = var.resource_group_name
-  subnet_id           = each.value
-  tags                = merge(var.tags, {})
+#   name                = "${var.storage_account_name}-blob-pe"
+#   location            = var.location
+#   resource_group_name = var.resource_group_name
+#   subnet_id           = each.value
+#   tags                = merge(var.tags, {})
 
-  private_service_connection {
-    name                           = "${var.storage_account_name}-psc"
-    private_connection_resource_id = azurerm_storage_account.storage.id
-    is_manual_connection           = false
-    subresource_names              = ["queue"]
-  }
+#   private_service_connection {
+#     name                           = "${var.storage_account_name}-psc"
+#     private_connection_resource_id = azurerm_storage_account.storage.id
+#     is_manual_connection           = false
+#     subresource_names              = ["blob"]
+#   }
 
-  depends_on = [
-    azurerm_storage_account.storage
-  ]
-}
+#   depends_on = [
+#     azurerm_storage_account.storage
+#   ]
+# }
+
+# resource "azurerm_private_endpoint" "sto-queue-pe" {
+#   for_each            = local.virtual_network_subnet_ids_pe_dict
+
+#   name                = "${var.storage_account_name}-queue-pe"
+#   location            = var.location
+#   resource_group_name = var.resource_group_name
+#   subnet_id           = each.value
+#   tags                = merge(var.tags, {})
+
+#   private_service_connection {
+#     name                           = "${var.storage_account_name}-psc"
+#     private_connection_resource_id = azurerm_storage_account.storage.id
+#     is_manual_connection           = false
+#     subresource_names              = ["queue"]
+#   }
+
+#   depends_on = [
+#     azurerm_storage_account.storage
+#   ]
+# }
+
+# resource "azurerm_private_endpoint" "sto-table-pe" {
+#   for_each            = local.virtual_network_subnet_ids_pe_dict
+
+#   name                = "${var.storage_account_name}-queue-pe"
+#   location            = var.location
+#   resource_group_name = var.resource_group_name
+#   subnet_id           = each.value
+#   tags                = merge(var.tags, {})
+
+#   private_service_connection {
+#     name                           = "${var.storage_account_name}-psc"
+#     private_connection_resource_id = azurerm_storage_account.storage.id
+#     is_manual_connection           = false
+#     subresource_names              = ["table"]
+#   }
+
+#   depends_on = [
+#     azurerm_storage_account.storage
+#   ]
+# }
 
 resource "azurerm_private_dns_a_record" "dns_a_storage_blob" {
   for_each            = local.virtual_network_subnet_ids_pe_dict
