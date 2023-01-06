@@ -112,8 +112,8 @@ resource "azurerm_windows_function_app" "function" {
     dynamic "scm_ip_restriction" {
       for_each = local.function_ip_restrictions
       content {
-        ip_address                = ip_restriction.value.ip_address
-        virtual_network_subnet_id = ip_restriction.value.virtual_network_subnet_id
+        ip_address                = scm_ip_restriction.value.ip_address
+        virtual_network_subnet_id = scm_ip_restriction.value.virtual_network_subnet_id
       }
     }
   }
