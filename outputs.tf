@@ -56,7 +56,12 @@ output "storage_private_endpoint_id" {
 
 output "storage_private_endpoint_dns_configs" {
   value       = {
-    for k, pe in azurerm_private_endpoint.sto-pe : k => { fqdn = pe.custom_dns_configs[0].fqdn, ip_addresses = pe.custom_dns_configs[0].ip_addresses }
+    for k, pe in azurerm_private_endpoint.sto-pe : k => [
+      for l in [0,1]: {
+        fqdn         = pe.custom_dns_configs[l].fqdn,
+        ip_addresses = pe.custom_dns_configs[l].ip_addresses
+      }
+    ]
   }
   description = "Private Endpoint Storage Custom DNS Configs"
 }
@@ -64,14 +69,14 @@ output "storage_private_endpoint_dns_configs" {
 output "storage_private_dns_a" {
   value = merge(
     {
-      for dns in azurerm_private_dns_a_record.dns_a_storage_blob: dns.name => {
+      for dns in azurerm_private_dns_a_record.dns_a_storage_blob: "${dns.name}.blob" => {
         "name"   : dns.name,
         "id"     : dns.id,
         "records": dns.records
       }
     },
     {
-      for dns in azurerm_private_dns_a_record.dns_a_storage_queue: dns.name => {
+      for dns in azurerm_private_dns_a_record.dns_a_storage_queue: "${dns.name}.queue" => {
         "name"   : dns.name,
         "id"     : dns.id,
         "records": dns.records
