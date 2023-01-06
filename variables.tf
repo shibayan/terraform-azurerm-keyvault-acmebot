@@ -155,33 +155,30 @@ variable "private_dns_zone_rg" {
   nullable = true
 }
 
-variable "private_dns_zone_function_web_name" {
-  type = string
+variable "private_dns_zone_names_function" {
+  type = object(
+    {
+      web = string
+    }
+  )
   description = "Private DNS zone name for function"
   default = null
   nullable = true
 }
 
-variable "private_dns_zone_storage_blob_name" {
-  type = string
-  description = "Private DNS zone name for storage blob"
+variable "private_dns_zone_names_storage" {
+  type = object(
+    {
+      blob  = string
+      queue = string
+      table = string
+    }
+  )
+  description = "Private DNS zone names for storage"
   default = null
   nullable = true
 }
 
-variable "private_dns_zone_storage_queue_name" {
-  type = string
-  description = "Private DNS zone name for storage queue"
-  default = null
-  nullable = true
-}
-
-variable "private_dns_zone_storage_table_name" {
-  type = string
-  description = "Private DNS zone name for storage table"
-  default = null
-  nullable = true
-}
 
 
 
@@ -355,12 +352,6 @@ locals {
     ): l => w
   }
 
-  private_dns_zone_storage = {
-    "blob"  = var.private_dns_zone_storage_blob_name,
-    "queue" = var.private_dns_zone_storage_queue_name,
-    "table" = var.private_dns_zone_storage_table_name,
-  }
-
   storage_pe = merge(concat(
     [
       for subnet_pos, subnet_id in local.virtual_network_subnet_ids_pe_dict: {
@@ -369,7 +360,7 @@ locals {
             "subnet_pos"            = subnet_pos,
             "subnet_id"             = subnet_id,
             "subresource_name"      = subresource_name,
-            "private_dns_zone_name" = local.private_dns_zone_storage[subresource_name]
+            "private_dns_zone_name" = var.private_dns_zone_names_storage[subresource_name]
         }
       }
     ]

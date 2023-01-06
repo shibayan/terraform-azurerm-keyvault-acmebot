@@ -196,7 +196,7 @@ resource "azurerm_private_dns_a_record" "dns_a_function_web" {
     ])
   ...)
 
-  zone_name           = var.private_dns_zone_function_web_name
+  zone_name           = var.private_dns_zone_names_function["web"]
   resource_group_name = var.private_dns_zone_rg
   ttl                 = 300
   name                = replace(azurerm_private_endpoint.func-pe[each.value.key].custom_dns_configs[each.value.conf].fqdn, ".azurewebsites.net", "")
