@@ -157,7 +157,7 @@ resource "azurerm_private_endpoint" "sto-pe" {
         }
       }
     ]
-  ))
+  )...)
 
   name                = "${var.storage_account_name}-${each.value.subresource_name}-pe"
   location            = var.location
