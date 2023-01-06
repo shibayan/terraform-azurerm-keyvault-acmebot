@@ -48,41 +48,46 @@ output "storage_name" {
 }
 
 output "storage_private_endpoint_id" {
-  value       = {
-    for k, pe in azurerm_private_endpoint.sto-pe : k => pe.id
-  }
+  value       = flatten([
+    for pes in [azurerm_private_endpoint.sto-blob-pe, azurerm_private_endpoint.sto-queue-pe]: [
+      for pe in pes : pe.id
+    ]
+  ])
+
   description = "Private Endpoint Storage ID"
 }
 
 output "storage_private_endpoint_dns_configs" {
-  value       = flatten([
-    for pes in [azurerm_private_endpoint.sto-blob-pe, azurerm_private_endpoint.sto-queue-pe]: [
-      for pe in pes : {
-        fqdn         = pe.custom_dns_configs[0].fqdn,
-        ip_addresses = pe.custom_dns_configs[0].ip_addresses
+  value       = {
+    for k, v in local.virtual_network_subnet_ids_pe_dict: k => {
+      "blob" = {
+        fqdn         = azurerm_private_endpoint.sto-blob-pe[k].custom_dns_configs[0].fqdn,
+        ip_addresses = azurerm_private_endpoint.sto-blob-pe[k].custom_dns_configs[0].ip_addresses
+      },
+      "queue" = {
+        fqdn         = azurerm_private_endpoint.sto-queue-pe[k].custom_dns_configs[0].fqdn,
+        ip_addresses = azurerm_private_endpoint.sto-queue-pe[k].custom_dns_configs[0].ip_addresses
       }
     ]
-  ])
+  }
   description = "Private Endpoint Storage Custom DNS Configs"
 }
 
 output "storage_private_dns_a" {
-  value = merge(
-    {
-      for dns in azurerm_private_dns_a_record.dns_a_storage_blob: "${dns.name}.blob" => {
-        "name"   : dns.name,
-        "id"     : dns.id,
-        "records": dns.records
-      }
-    },
-    {
-      for dns in azurerm_private_dns_a_record.dns_a_storage_queue: "${dns.name}.queue" => {
-        "name"   : dns.name,
-        "id"     : dns.id,
-        "records": dns.records
+  value = {
+    for k, v in local.virtual_network_subnet_ids_pe_dict: k => {
+      "blob": {
+        "name"   : azurerm_private_dns_a_record.dns_a_storage_blob[k].name,
+        "id"     : azurerm_private_dns_a_record.dns_a_storage_blob[k].id,
+        "records": azurerm_private_dns_a_record.dns_a_storage_blob[k].records
+      },
+      "queue": {
+        "name"   : azurerm_private_dns_a_record.dns_a_storage_queue[k].name,
+        "id"     : azurerm_private_dns_a_record.dns_a_storage_queue[k].id,
+        "records": azurerm_private_dns_a_record.dns_a_storage_queue[k].records
       }
     }
-  )
+  }
 }
 
 
