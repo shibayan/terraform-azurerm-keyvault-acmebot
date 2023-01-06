@@ -62,13 +62,22 @@ output "storage_private_endpoint_dns_configs" {
 }
 
 output "storage_private_dns_a" {
-    value = {
-        for dns in azurerm_private_dns_a_record.dns_a_storage_blob: dns.name => {
-            "name"   : dns.name,
-            "id"     : dns.id,
-            "records": dns.records
-        }
+  value = merge(
+    {
+      for dns in azurerm_private_dns_a_record.dns_a_storage_blob: dns.name => {
+        "name"   : dns.name,
+        "id"     : dns.id,
+        "records": dns.records
+      }
+    },
+    {
+      for dns in azurerm_private_dns_a_record.dns_a_storage_queue: dns.name => {
+        "name"   : dns.name,
+        "id"     : dns.id,
+        "records": dns.records
+      }
     }
+  )
 }
 
 
