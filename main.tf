@@ -8,6 +8,11 @@ resource "azurerm_storage_account" "storage" {
   enable_https_traffic_only       = true
   allow_nested_items_to_be_public = false
   min_tls_version                 = "TLS1_2"
+  lifecycle {
+    ignore_changes = [
+      tags
+    ]
+  }
 }
 
 resource "azurerm_service_plan" "serverfarm" {
@@ -17,6 +22,11 @@ resource "azurerm_service_plan" "serverfarm" {
 
   os_type  = "Windows"
   sku_name = "Y1"
+  lifecycle {
+    ignore_changes = [
+      tags
+    ]
+  }
 }
 
 resource "azurerm_log_analytics_workspace" "workspace" {
@@ -25,6 +35,11 @@ resource "azurerm_log_analytics_workspace" "workspace" {
   location            = var.location
   sku                 = "PerGB2018"
   retention_in_days   = 30
+  lifecycle {
+    ignore_changes = [
+      tags
+    ]
+  }
 }
 
 resource "azurerm_application_insights" "insights" {
@@ -33,6 +48,11 @@ resource "azurerm_application_insights" "insights" {
   location            = var.location
   application_type    = "web"
   workspace_id        = azurerm_log_analytics_workspace.workspace.id
+  lifecycle {
+    ignore_changes = [
+      tags
+    ]
+  }
 }
 
 resource "azurerm_windows_function_app" "function" {
@@ -84,5 +104,13 @@ resource "azurerm_windows_function_app" "function" {
         ip_address = ip_restriction.value
       }
     }
+  }
+
+  lifecycle {
+    ignore_changes = [
+      tags,
+      app_settings["MICROSOFT_PROVIDER_AUTHENTICATION_SECRET"],
+      sticky_settings["app_setting_names"]
+    ]
   }
 }
