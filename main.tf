@@ -95,7 +95,7 @@ resource "azurerm_windows_function_app" "function" {
     minimum_tls_version                    = "1.2"
 
     application_stack {
-      dotnet_version = "6"
+      dotnet_version = "v6.0"
     }
 
     dynamic "ip_restriction" {
