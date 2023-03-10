@@ -75,16 +75,21 @@ resource "azurerm_windows_function_app" "function" {
     type = "SystemAssigned"
   }
 
-  dynamic "auth_settings" {
+  dynamic "auth_settings_v2" {
     for_each = toset(var.auth_settings != null ? [1] : [])
     content {
-      enabled                       = var.auth_settings.enabled
-      unauthenticated_client_action = var.auth_settings.unauthenticated_client_action
-      issuer                        = var.auth_settings.issuer
-      token_store_enabled           = var.auth_settings.token_store_enabled
-      active_directory {
-        allowed_audiences = var.auth_settings.active_directory.allowed_audiences
-        client_id         = var.auth_settings.active_directory.client_id
+      auth_enabled           = var.auth_settings.enabled
+      default_provider       = var.auth_settings.default_provider
+      require_authentication = var.auth_settings.require_authentication
+      unauthenticated_action = var.auth_settings.unauthenticated_action
+      login {
+        token_store_enabled = var.auth_settings.login.token_store_enabled
+      }
+      active_directory_v2 {
+        client_id                  = var.auth_settings.active_directory_v2.client_id
+        allowed_audiences          = var.auth_settings.active_directory_v2.allowed_audiences
+        tenant_auth_endpoint       = var.auth_settings.active_directory_v2.tenant_auth_endpoint
+        client_secret_setting_name = var.auth_settings.active_directory_v2.client_secret_setting_name
       }
     }
   }

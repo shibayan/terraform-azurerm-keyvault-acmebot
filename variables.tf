@@ -36,13 +36,18 @@ variable "resource_group_name" {
 
 variable "auth_settings" {
   type = object({
-    enabled                       = bool
-    issuer                        = string
-    token_store_enabled           = bool
-    unauthenticated_client_action = string
-    active_directory = object({
-      client_id         = string
-      allowed_audiences = list(string)
+    enabled                = bool
+    default_provider       = string
+    require_authentication = bool
+    unauthenticated_action = string
+    active_directory_v2 = object({
+      client_id                  = string
+      allowed_audiences          = list(string)
+      tenant_auth_endpoint       = string
+      client_secret_setting_name = string
+    })
+    login = object({
+      token_store_enabled = bool
     })
   })
   description = "Authentication settings for the function app"
