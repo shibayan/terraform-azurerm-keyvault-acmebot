@@ -71,7 +71,7 @@ variable "mail_address" {
 
   # Check that a valid email address has been provided.
   validation {
-    condition = can(regex("^(.+)@(.+)$", var.mail_address))
+    condition = can(regex("^(.+)@(.+)\\.(.+)$", var.mail_address))
     error_message = "A valid email address is required for `mail_address`."
   }
 }
