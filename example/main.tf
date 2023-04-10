@@ -45,7 +45,6 @@ module "keyvault_acmebot" {
   source  = "shibayan/keyvault-acmebot/azurerm"
   version = "~> 2.0"
 
-
   function_app_name     = "func-acmebot-module-${random_string.random.result}"
   app_service_plan_name = "plan-acmebot-module-${random_string.random.result}"
   storage_account_name  = "stacmebotmodule${random_string.random.result}"
