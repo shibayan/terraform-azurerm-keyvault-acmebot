@@ -8,6 +8,8 @@ resource "azurerm_storage_account" "storage" {
   enable_https_traffic_only       = true
   allow_nested_items_to_be_public = false
   min_tls_version                 = "TLS1_2"
+  tags                            = local.all_tags
+
   lifecycle {
     ignore_changes = [
       tags
@@ -19,9 +21,11 @@ resource "azurerm_service_plan" "serverfarm" {
   name                = var.app_service_plan_name
   resource_group_name = var.resource_group_name
   location            = var.location
+  tags                = local.all_tags
 
   os_type  = "Windows"
   sku_name = "Y1"
+
   lifecycle {
     ignore_changes = [
       tags
@@ -35,6 +39,8 @@ resource "azurerm_log_analytics_workspace" "workspace" {
   location            = var.location
   sku                 = "PerGB2018"
   retention_in_days   = 30
+  tags                = local.all_tags
+
   lifecycle {
     ignore_changes = [
       tags
@@ -48,6 +54,8 @@ resource "azurerm_application_insights" "insights" {
   location            = var.location
   application_type    = "web"
   workspace_id        = azurerm_log_analytics_workspace.workspace.id
+  tags                = local.all_tags
+
   lifecycle {
     ignore_changes = [
       tags
@@ -62,6 +70,7 @@ resource "azurerm_windows_function_app" "function" {
   service_plan_id            = azurerm_service_plan.serverfarm.id
   storage_account_name       = azurerm_storage_account.storage.name
   storage_account_access_key = azurerm_storage_account.storage.primary_access_key
+  tags                       = local.all_tags
 
   functions_extension_version = "~4"
   https_only                  = true

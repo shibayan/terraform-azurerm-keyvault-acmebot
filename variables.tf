@@ -68,12 +68,24 @@ variable "vault_uri" {
 variable "mail_address" {
   type        = string
   description = "Email address for ACME account."
+
+  # Check that a valid email address has been provided.
+  validation {
+    condition = can(regex("^(.+)@(.+)$", var.mail_address))
+    error_message = "A valid email address is required for `mail_address`."
+  }
 }
 
 variable "acme_endpoint" {
   type        = string
   description = "Certification authority ACME Endpoint."
   default     = "https://acme-v02.api.letsencrypt.org/"
+}
+
+variable "tags" {
+  type        = map(string)
+  description = "A map of additional tags to assign to each of the resources created by the module."
+  default     = {}
 }
 
 variable "environment" {
