@@ -1,6 +1,13 @@
-variable "function_app_name" {
+variable "acme_endpoint" {
   type        = string
-  description = "The name of the Function App to create."
+  description = "Certification authority ACME Endpoint."
+  default     = "https://acme-v02.api.letsencrypt.org/"
+}
+
+variable "additional_tags" {
+  type        = map(string)
+  description = "A map of additional tags to assign to each of the resources created by the module."
+  default     = {}
 }
 
 variable "allowed_ip_addresses" {
@@ -9,29 +16,20 @@ variable "allowed_ip_addresses" {
   default     = []
 }
 
-variable "app_service_plan_name" {
-  type        = string
-  description = "The name of the App Service Plan to create."
-}
-
-variable "storage_account_name" {
-  type        = string
-  description = "The name of the Storage Account to create."
-}
-
 variable "app_insights_name" {
   type        = string
   description = "The name of the Application Insights to create."
 }
 
-variable "workspace_name" {
+variable "app_service_plan_name" {
   type        = string
-  description = "The name of the Log Analytics Workspace to create."
+  description = "The name of the App Service Plan to create."
 }
 
-variable "resource_group_name" {
-  type        = string
-  description = "Resource group name to be added."
+variable "app_settings" {
+  description = "Additional settings to set for the function app"
+  type        = map(string)
+  default     = {}
 }
 
 variable "auth_settings" {
@@ -49,67 +47,21 @@ variable "auth_settings" {
   default     = null
 }
 
-variable "app_settings" {
-  description = "Additional settings to set for the function app"
-  type        = map(string)
-  default     = {}
-}
-
-variable "location" {
-  type        = string
-  description = "Azure region to create resources."
-}
-
-variable "vault_uri" {
-  type        = string
-  description = "URL of the Key Vault to store the issued certificate."
-}
-
-variable "mail_address" {
-  type        = string
-  description = "Email address for ACME account."
-
-  # Check that a valid email address has been provided.
-  validation {
-    condition = can(regex("^(.+)@(.+)\\.(.+)$", var.mail_address))
-    error_message = "A valid email address is required for `mail_address`."
-  }
-}
-
-variable "acme_endpoint" {
-  type        = string
-  description = "Certification authority ACME Endpoint."
-  default     = "https://acme-v02.api.letsencrypt.org/"
-}
-
-variable "tags" {
-  type        = map(string)
-  description = "A map of additional tags to assign to each of the resources created by the module."
-  default     = {}
-}
-
 variable "environment" {
   type        = string
   description = "The name of the Azure environment."
   default     = "AzureCloud"
 }
 
-variable "time_zone" {
+variable "email_address" { #rename
   type        = string
-  description = "The name of time zone as the basis for automatic update timing."
-  default     = "UTC"
-}
+  description = "Email address for ACME account."
 
-variable "webhook_url" {
-  type        = string
-  description = "The webhook where notifications will be sent."
-  default     = null
-}
-
-variable "mitigate_chain_order" {
-  type        = bool
-  description = "Mitigate certificate ordering issues that occur with some services."
-  default     = false
+  # Check that a valid email address has been provided.
+  validation {
+    condition     = can(regex("^(.+)@(.+)\\.(.+)$", var.email_address))
+    error_message = "A valid email address is required for `email_address`."
+  }
 }
 
 variable "external_account_binding" {
@@ -121,7 +73,64 @@ variable "external_account_binding" {
   default = null
 }
 
+variable "function_app_name" {
+  type        = string
+  description = "The name of the Function App to create."
+}
+
+variable "keyvault_acmebot_version" {
+  type        = string
+  description = "The version of Key Vault ACMEBot to dpeloy."
+  default     = "latest"
+}
+
+variable "location" {
+  type        = string
+  description = "Azure region to create resources."
+}
+
+variable "mitigate_chain_order" {
+  type        = bool
+  description = "Mitigate certificate ordering issues that occur with some services."
+  default     = false
+}
+
+variable "resource_group_name" {
+  type        = string
+  description = "Resource group name to be added."
+}
+
+variable "storage_account_name" {
+  type        = string
+  description = "The name of the Storage Account to create."
+}
+
+variable "time_zone" {
+  type        = string
+  description = "The name of time zone as the basis for automatic update timing."
+  default     = "UTC"
+}
+
+variable "vault_uri" {
+  type        = string
+  description = "URL of the Key Vault to store the issued certificate."
+}
+
+variable "webhook_url" {
+  type        = string
+  description = "The webhook where notifications will be sent."
+  default     = null
+}
+
+variable "workspace_name" {
+  type        = string
+  description = "The name of the Log Analytics Workspace to create."
+}
+
+###
 # DNS Provider Configuration
+###
+
 variable "azure_dns" {
   type = object({
     subscription_id = string
