@@ -1,29 +1,29 @@
 variable "acme_endpoint" {
-  type        = string
   description = "Certification authority ACME Endpoint."
+  type        = string
   default     = "https://acme-v02.api.letsencrypt.org/"
 }
 
 variable "additional_tags" {
-  type        = map(string)
   description = "A map of additional tags to assign to each of the resources created by the module."
+  type        = map(string)
   default     = {}
 }
 
 variable "allowed_ip_addresses" {
-  type        = list(string)
   description = "A list of allowed ip addresses that can access the Acmebot UI."
+  type        = list(string)
   default     = []
 }
 
 variable "app_insights_name" {
-  type        = string
   description = "The name of the Application Insights to create."
+  type        = string
 }
 
 variable "app_service_plan_name" {
-  type        = string
   description = "The name of the App Service Plan to create."
+  type        = string
 }
 
 variable "app_settings" {
@@ -33,6 +33,7 @@ variable "app_settings" {
 }
 
 variable "auth_settings" {
+  description = "Authentication settings for the function app"
   type = object({
     enabled                       = bool
     issuer                        = string
@@ -43,19 +44,18 @@ variable "auth_settings" {
       allowed_audiences = list(string)
     })
   })
-  description = "Authentication settings for the function app"
   default     = null
 }
 
 variable "environment" {
-  type        = string
   description = "The name of the Azure environment."
+  type        = string
   default     = "AzureCloud"
 }
 
 variable "email_address" { #rename
-  type        = string
   description = "Email address for ACME account."
+  type        = string
 
   # Check that a valid email address has been provided.
   validation {
@@ -65,6 +65,7 @@ variable "email_address" { #rename
 }
 
 variable "external_account_binding" {
+  description = "???"
   type = object({
     key_id    = string
     hmac_key  = string
@@ -74,57 +75,57 @@ variable "external_account_binding" {
 }
 
 variable "function_app_name" {
-  type        = string
   description = "The name of the Function App to create."
+  type        = string
 }
 
 variable "keyvault_acmebot_version" {
-  type        = string
   description = "The version of Key Vault ACMEBot to dpeloy."
+  type        = string
   default     = "latest"
 }
 
 variable "location" {
-  type        = string
   description = "Azure region to create resources."
+  type        = string
 }
 
 variable "mitigate_chain_order" {
-  type        = bool
   description = "Mitigate certificate ordering issues that occur with some services."
+  type        = bool
   default     = false
 }
 
 variable "resource_group_name" {
-  type        = string
   description = "Resource group name to be added."
+  type        = string
 }
 
 variable "storage_account_name" {
-  type        = string
   description = "The name of the Storage Account to create."
+  type        = string
 }
 
 variable "time_zone" {
-  type        = string
   description = "The name of time zone as the basis for automatic update timing."
+  type        = string
   default     = "UTC"
 }
 
 variable "vault_uri" {
-  type        = string
   description = "URL of the Key Vault to store the issued certificate."
+  type        = string
 }
 
 variable "webhook_url" {
-  type        = string
   description = "The webhook where notifications will be sent."
+  type        = string
   default     = null
 }
 
 variable "workspace_name" {
-  type        = string
   description = "The name of the Log Analytics Workspace to create."
+  type        = string
 }
 
 ###
@@ -132,6 +133,7 @@ variable "workspace_name" {
 ###
 
 variable "azure_dns" {
+  description = ""
   type = object({
     subscription_id = string
   })
@@ -139,6 +141,7 @@ variable "azure_dns" {
 }
 
 variable "cloudflare" {
+  description = ""
   type = object({
     api_token = string
   })
@@ -146,6 +149,7 @@ variable "cloudflare" {
 }
 
 variable "custom_dns" {
+  description = ""
   type = object({
     endpoint            = string
     api_key             = string
@@ -156,6 +160,7 @@ variable "custom_dns" {
 }
 
 variable "dns_made_easy" {
+  description = ""
   type = object({
     api_key    = string
     secret_key = string
@@ -164,6 +169,7 @@ variable "dns_made_easy" {
 }
 
 variable "gandi" {
+  description = ""
   type = object({
     api_key = string
   })
@@ -171,6 +177,7 @@ variable "gandi" {
 }
 
 variable "go_daddy" {
+  description = ""
   type = object({
     api_key    = string
     api_secret = string
@@ -179,6 +186,7 @@ variable "go_daddy" {
 }
 
 variable "google_dns" {
+  description = ""
   type = object({
     key_file64 = string
   })
@@ -186,6 +194,7 @@ variable "google_dns" {
 }
 
 variable "route_53" {
+  description = ""
   type = object({
     access_key = string
     secret_key = string
@@ -195,6 +204,7 @@ variable "route_53" {
 }
 
 variable "trans_ip" {
+  description = ""
   type = object({
     customer_name    = string
     private_key_name = string
