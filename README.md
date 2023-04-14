@@ -26,7 +26,7 @@ module "keyvault_acmebot" {
   location              = azurerm_resource_group.default.location
   email_address         = "YOUR-EMAIL-ADDRESS"
   vault_uri             = azurerm_key_vault.default.vault_uri
-  tags = {
+  additional_tags = {
     my_tag = "some value"
   }
 
