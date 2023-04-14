@@ -34,7 +34,7 @@ module "keyvault_acmebot" {
     subscription_id = data.azurerm_client_config.current.subscription_id
   }
 
-  allowed_ip_addresses = ["0.0.0.1"]
+  allowed_ip_addresses = ["0.0.0.0"]
 }
 ```
 
