@@ -5,7 +5,9 @@ locals {
     TerraformModuleRepository = "https://github.com/shibayan/terraform-azurerm-keyvault-acmebot"
     TerraformModuleVersion    = "2.2.0" # Should include a github action to ensure
                                         # that this tag is pushed when this merges
-                                        # or that the PR generates an error
+                                        # or that the PR generates an error if
+                                        # the version here is not a new and "later"
+                                        # tag.
   }
 
   all_tags = merge(
