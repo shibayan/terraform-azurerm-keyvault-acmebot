@@ -44,7 +44,7 @@ variable "auth_settings" {
       allowed_audiences = list(string)
     })
   })
-  default     = null
+  default = null
 }
 
 variable "environment" {
@@ -86,8 +86,8 @@ variable "keyvault_acmebot_version" {
 
   # Make certain our versions is latest or 4+
   validation {
-    condition = ( contains("latest", var.keyvault_acmebot_version)
-    || can(regex("4\\./d+\\./d+", var.keyvault_acmebot_version))
+    condition = (contains("latest", var.keyvault_acmebot_version)
+      || can(regex("4\\./d+\\./d+", var.keyvault_acmebot_version))
     )
     error_message = ""
   }
