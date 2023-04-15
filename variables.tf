@@ -65,7 +65,7 @@ variable "email_address" { #rename
 }
 
 variable "external_account_binding" {
-  description = "???"
+  description = ""
   type = object({
     key_id    = string
     hmac_key  = string
@@ -83,6 +83,14 @@ variable "keyvault_acmebot_version" {
   description = "The version of Key Vault ACMEBot to dpeloy."
   type        = string
   default     = "latest"
+
+  # Make certain our versions is latest or 4+
+  validation {
+    condition = ( contains("latest", var.keyvault_acmebot_version)
+    || can(regex("4\\./d+\\./d+", var.keyvault_acmebot_version))
+    )
+    error_message = ""
+  }
 }
 
 variable "location" {
