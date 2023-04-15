@@ -10,8 +10,6 @@
 
 This project is licensed under the [Apache License 2.0](https://github.com/shibayan/terraform-azurerm-keyvault-acmebot/blob/master/LICENSE)
 
-
-
 ## Examples
 
 ```hcl
