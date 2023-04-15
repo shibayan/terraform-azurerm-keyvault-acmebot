@@ -3,11 +3,11 @@ locals {
   internal_tags = {
     KeyvaultACMEBotVersion    = var.keyvault_acmebot_version
     TerraformModuleRepository = "https://github.com/shibayan/terraform-azurerm-keyvault-acmebot"
-    TerraformModuleVersion    = "2.2.0" # Should include a github action to ensure
-                                        # that this tag is pushed when this merges
-                                        # or that the PR generates an error if
-                                        # the version here is not a new and "later"
-                                        # tag.
+    TerraformModuleVersion    = "2.2.0"
+    # Should include a github action to ensure that
+    # TerraformModuleVersion is pushed when this merges
+    # or that the PR generates an error if the version
+    # here is not a new and "later" tag.
   }
 
   all_tags = merge(
