@@ -1,4 +1,4 @@
-name: Generate terraform docs
+name: Validate README.md
 on:
   - pull_request
 jobs:
@@ -9,8 +9,9 @@ jobs:
       with:
         ref: ${{ github.event.pull_request.head.ref }}
 
-    - name: Render terraform docs inside the README.md and push changes back to PR branch
+    - name: Render terraform docs inside the README.md and validate rendered file matches PR contents
       uses: terraform-docs/gh-actions@v1.0.0
       with:
         working-dir: .
+        config-file: .terraform-docs.yml
         fail-on-diff: true
