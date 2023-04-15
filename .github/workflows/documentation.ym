@@ -1,6 +1,7 @@
-name: Validate README.md
+name: Docs
 on:
   - pull_request
+
 jobs:
   docs:
     runs-on: ubuntu-latest
@@ -9,9 +10,11 @@ jobs:
       with:
         ref: ${{ github.event.pull_request.head.ref }}
 
-    - name: Render terraform docs inside the README.md and validate rendered file matches PR contents
-      uses: terraform-docs/gh-actions@v1.0.0
+    - name: Render terraform docs and push changes back to PR
+      uses: terraform-docs/gh-actions@main
       with:
         working-dir: .
         config-file: .terraform-docs.yml
-        fail-on-diff: true
+        output-file: README.md
+        output-method: inject
+        git-push: "true"
