@@ -1,3 +1,15 @@
+<!-- BEGIN_TF_DOCS -->
+# Key Vault Acmebot Terraform module
+
+[![Validate](https://github.com/shibayan/terraform-azurerm-keyvault-acmebot/actions/workflows/validate.yml/badge.svg)](https://github.com/shibayan/terraform-azurerm-keyvault-acmebot/actions/workflows/validate.yml)
+[![Release](https://badgen.net/github/release/shibayan/terraform-azurerm-keyvault-acmebot)](https://github.com/shibayan/terraform-azurerm-keyvault-acmebot/releases/latest)
+[![License](https://badgen.net/github/license/shibayan/terraform-azurerm-keyvault-acmebot)](https://github.com/shibayan/terraform-azurerm-keyvault-acmebot/blob/master/LICENSE)
+[![Terraform Registry](https://badgen.net/badge/terraform/registry/5c4ee5)](https://registry.terraform.io/modules/shibayan/keyvault-acmebot/azurerm/latest)
+
+## License
+
+This project is licensed under the [Apache License 2.0](https://github.com/shibayan/terraform-azurerm-keyvault-acmebot/blob/master/LICENSE)
+
 
 
 ## Examples
@@ -5,7 +17,7 @@
 ```hcl
 module "keyvault_acmebot" {
   source  = "shibayan/keyvault-acmebot/azurerm"
-  version = "~> 2.0"
+  version = "~> 2.2.0"
 
   function_app_name     = "func-acmebot-module-${random_string.random.result}"
   app_service_plan_name = "plan-acmebot-module-${random_string.random.result}"
@@ -55,7 +67,7 @@ No requirements.
 | dns_made_easy | n/a | ```object({ api_key = string secret_key = string })``` | `null` | no |
 | email_address | Email address for ACME account. | `string` | n/a | yes |
 | environment | The name of the Azure environment. | `string` | `"AzureCloud"` | no |
-| external_account_binding | ??? | ```object({ key_id = string hmac_key = string algorithm = string })``` | `null` | no |
+| external_account_binding | n/a | ```object({ key_id = string hmac_key = string algorithm = string })``` | `null` | no |
 | function_app_name | The name of the Function App to create. | `string` | n/a | yes |
 | gandi | n/a | ```object({ api_key = string })``` | `null` | no |
 | go_daddy | n/a | ```object({ api_key = string api_secret = string })``` | `null` | no |
