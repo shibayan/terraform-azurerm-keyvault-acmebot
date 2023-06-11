@@ -36,7 +36,7 @@ variable "resource_group_name" {
 
 variable "auth_settings" {
   type = object({
-    enabled                = bool
+    enabled = bool
     active_directory = object({
       client_id                  = string
       allowed_audiences          = list(string)
