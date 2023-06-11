@@ -79,12 +79,10 @@ resource "azurerm_windows_function_app" "function" {
     for_each = toset(var.auth_settings != null ? [1] : [])
     content {
       auth_enabled           = var.auth_settings.enabled
-      default_provider       = var.auth_settings.default_provider
-      require_authentication = var.auth_settings.require_authentication
-      unauthenticated_action = var.auth_settings.unauthenticated_action
-      login {
-        token_store_enabled = var.auth_settings.login.token_store_enabled
-      }
+      default_provider       = "azureactivedirectory"
+      require_authentication = true
+      unauthenticated_action = "RedirectToLoginPage"
+
       active_directory_v2 {
         client_id                  = var.auth_settings.active_directory_v2.client_id
         allowed_audiences          = var.auth_settings.active_directory_v2.allowed_audiences
