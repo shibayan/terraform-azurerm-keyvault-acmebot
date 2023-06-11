@@ -40,7 +40,7 @@ variable "auth_settings" {
     default_provider       = string
     require_authentication = bool
     unauthenticated_action = string
-    active_directory_v2 = object({
+    active_directory = object({
       client_id                  = string
       allowed_audiences          = list(string)
       tenant_auth_endpoint       = string
