@@ -83,6 +83,10 @@ resource "azurerm_windows_function_app" "function" {
       require_authentication = true
       unauthenticated_action = "RedirectToLoginPage"
 
+      login {
+        token_store_enabled = false
+      }
+
       active_directory_v2 {
         client_id                  = var.auth_settings.active_directory_v2.client_id
         allowed_audiences          = var.auth_settings.active_directory_v2.allowed_audiences
