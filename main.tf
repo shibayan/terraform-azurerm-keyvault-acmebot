@@ -93,10 +93,10 @@ resource "azurerm_windows_function_app" "function" {
       }
 
       active_directory_v2 {
-        client_id                  = var.auth_settings.active_directory_v2.client_id
-        allowed_audiences          = var.auth_settings.active_directory_v2.allowed_audiences
-        tenant_auth_endpoint       = var.auth_settings.active_directory_v2.tenant_auth_endpoint
-        client_secret_setting_name = var.auth_settings.active_directory_v2.client_secret_setting_name
+        client_id                  = var.auth_settings.active_directory.client_id
+        allowed_audiences          = var.auth_settings.active_directory.allowed_audiences
+        tenant_auth_endpoint       = var.auth_settings.active_directory.tenant_auth_endpoint
+        client_secret_setting_name = var.auth_settings.active_directory.client_secret_setting_name
       }
     }
   }
