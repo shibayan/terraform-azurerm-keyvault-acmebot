@@ -84,12 +84,12 @@ resource "azurerm_windows_function_app" "function" {
 
     content {
       auth_enabled           = var.auth_settings.enabled
-      default_provider       = var.auth_settings.default_provider
-      require_authentication = var.auth_settings.require_authentication
-      unauthenticated_action = var.auth_settings.unauthenticated_action
+      default_provider       = "azureactivedirectory"
+      require_authentication = true
+      unauthenticated_action = "RedirectToLoginPage"
 
       login {
-        token_store_enabled = var.auth_settings.login.token_store_enabled
+        token_store_enabled = false
       }
 
       active_directory_v2 {
