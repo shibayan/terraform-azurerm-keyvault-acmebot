@@ -8,6 +8,7 @@ resource "azurerm_storage_account" "storage" {
   enable_https_traffic_only       = true
   allow_nested_items_to_be_public = false
   min_tls_version                 = "TLS1_2"
+
   lifecycle {
     ignore_changes = [
       tags
@@ -22,6 +23,7 @@ resource "azurerm_service_plan" "serverfarm" {
 
   os_type  = "Windows"
   sku_name = "Y1"
+
   lifecycle {
     ignore_changes = [
       tags
@@ -35,6 +37,7 @@ resource "azurerm_log_analytics_workspace" "workspace" {
   location            = var.location
   sku                 = "PerGB2018"
   retention_in_days   = 30
+
   lifecycle {
     ignore_changes = [
       tags
@@ -48,6 +51,7 @@ resource "azurerm_application_insights" "insights" {
   location            = var.location
   application_type    = "web"
   workspace_id        = azurerm_log_analytics_workspace.workspace.id
+
   lifecycle {
     ignore_changes = [
       tags
@@ -77,6 +81,7 @@ resource "azurerm_windows_function_app" "function" {
 
   dynamic "auth_settings_v2" {
     for_each = toset(var.auth_settings != null ? [1] : [])
+
     content {
       auth_enabled           = var.auth_settings.enabled
       default_provider       = "azureactivedirectory"
@@ -120,4 +125,13 @@ resource "azurerm_windows_function_app" "function" {
       sticky_settings["app_setting_names"]
     ]
   }
+}
+
+data "azurerm_function_app_host_keys" "function" {
+  name                = azurerm_windows_function_app.function.name
+  resource_group_name = var.resource_group_name
+
+  depends_on = [
+    azurerm_windows_function_app.function
+  ]
 }

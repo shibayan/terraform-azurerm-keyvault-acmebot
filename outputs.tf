@@ -12,3 +12,8 @@ output "allowed_ip_addresses" {
   value       = var.allowed_ip_addresses
   description = "IP addresses that are allowed to access the Acmebot UI."
 }
+
+output "api_key" {
+  value       = data.azurerm_function_app_host_keys.function.default_function_key
+  description = "Created Default Functions API Key"
+}
