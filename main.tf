@@ -73,7 +73,15 @@ resource "azurerm_windows_function_app" "function" {
   app_settings = merge({
     "WEBSITE_RUN_FROM_PACKAGE" = "https://stacmebotprod.blob.core.windows.net/keyvault-acmebot/v4/latest.zip"
     "WEBSITE_TIME_ZONE"        = var.time_zone
-  }, local.acmebot_app_settings, var.app_settings)
+  }, local.acmebot_app_settings, local.auth_app_settings, var.app_settings)
+
+  dynamic "sticky_settings" {
+    for_each = toset(length(local.auth_app_settings) != 0 ? [1] : [])
+
+    content {
+      app_setting_names = keys(local.auth_app_settings)
+    }
+  }
 
   identity {
     type = "SystemAssigned"
@@ -94,9 +102,8 @@ resource "azurerm_windows_function_app" "function" {
 
       active_directory_v2 {
         client_id                  = var.auth_settings.active_directory.client_id
-        allowed_audiences          = var.auth_settings.active_directory.allowed_audiences
+        client_secret_setting_name = "MICROSOFT_PROVIDER_AUTHENTICATION_SECRET"
         tenant_auth_endpoint       = var.auth_settings.active_directory.tenant_auth_endpoint
-        client_secret_setting_name = var.auth_settings.active_directory.client_secret_setting_name
       }
     }
   }
@@ -112,6 +119,7 @@ resource "azurerm_windows_function_app" "function" {
 
     dynamic "ip_restriction" {
       for_each = var.allowed_ip_addresses
+
       content {
         ip_address = ip_restriction.value
       }
