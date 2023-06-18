@@ -38,10 +38,9 @@ variable "auth_settings" {
   type = object({
     enabled = bool
     active_directory = object({
-      client_id                  = string
-      allowed_audiences          = list(string)
-      tenant_auth_endpoint       = string
-      client_secret_setting_name = string
+      client_id            = string
+      client_secret        = string
+      tenant_auth_endpoint = string
     })
   })
   description = "Authentication settings for the function app"
@@ -257,4 +256,8 @@ locals {
     local.trans_ip,
     local.webhook_url,
   )
+
+  auth_app_settings = var.auth_settings != null ? {
+    "MICROSOFT_PROVIDER_AUTHENTICATION_SECRET" = var.auth_settings.active_directory.client_secret
+  } : {}
 }
