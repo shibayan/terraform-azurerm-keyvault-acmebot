@@ -33,8 +33,8 @@ variable "allowed_ip_addresses" {
 }
 
 variable "additional_app_settings" {
-  description = "Additional settings to set for the function app"
   type        = map(string)
+  description = "Additional settings to set for the function app"
   default     = {}
 }
 
@@ -51,7 +51,6 @@ variable "time_zone" {
 }
 
 # Acmebot Configuration
-
 variable "vault_uri" {
   type        = string
   description = "URL of the Key Vault to store the issued certificate."
