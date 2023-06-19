@@ -53,6 +53,12 @@ variable "app_settings" {
   default     = {}
 }
 
+variable "additional_tags" {
+  type        = map(string)
+  description = "Additional tags to set for resources"
+  default     = {}
+}
+
 variable "location" {
   type        = string
   description = "Azure region to create resources."
