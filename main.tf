@@ -1,7 +1,9 @@
 resource "azurerm_storage_account" "storage" {
-  name                            = "st${replace(lower(var.app_base_name), "/[^a-z0-9\\-]/", "")}"
-  resource_group_name             = var.resource_group_name
-  location                        = var.location
+  name                = "st${replace(lower(var.app_base_name), "/[^a-z0-9\\-]/", "")}"
+  resource_group_name = var.resource_group_name
+  location            = var.location
+  tags                = var.additional_tags
+
   account_kind                    = "Storage"
   account_tier                    = "Standard"
   account_replication_type        = "LRS"
@@ -20,6 +22,7 @@ resource "azurerm_service_plan" "serverfarm" {
   name                = "plan-${var.app_base_name}"
   resource_group_name = var.resource_group_name
   location            = var.location
+  tags                = var.additional_tags
 
   os_type  = "Windows"
   sku_name = "Y1"
@@ -35,8 +38,10 @@ resource "azurerm_log_analytics_workspace" "workspace" {
   name                = "log-${var.app_base_name}"
   resource_group_name = var.resource_group_name
   location            = var.location
-  sku                 = "PerGB2018"
-  retention_in_days   = 30
+  tags                = var.additional_tags
+
+  sku               = "PerGB2018"
+  retention_in_days = 30
 
   lifecycle {
     ignore_changes = [
@@ -49,8 +54,10 @@ resource "azurerm_application_insights" "insights" {
   name                = "appi-${var.app_base_name}"
   resource_group_name = var.resource_group_name
   location            = var.location
-  application_type    = "web"
-  workspace_id        = azurerm_log_analytics_workspace.workspace.id
+  tags                = var.additional_tags
+
+  application_type = "web"
+  workspace_id     = azurerm_log_analytics_workspace.workspace.id
 
   lifecycle {
     ignore_changes = [
@@ -60,13 +67,14 @@ resource "azurerm_application_insights" "insights" {
 }
 
 resource "azurerm_windows_function_app" "function" {
-  name                       = "func-${var.app_base_name}"
-  resource_group_name        = var.resource_group_name
-  location                   = var.location
-  service_plan_id            = azurerm_service_plan.serverfarm.id
-  storage_account_name       = azurerm_storage_account.storage.name
-  storage_account_access_key = azurerm_storage_account.storage.primary_access_key
+  name                = "func-${var.app_base_name}"
+  resource_group_name = var.resource_group_name
+  location            = var.location
+  tags                = var.additional_tags
 
+  service_plan_id             = azurerm_service_plan.serverfarm.id
+  storage_account_name        = azurerm_storage_account.storage.name
+  storage_account_access_key  = azurerm_storage_account.storage.primary_access_key
   functions_extension_version = "~4"
   https_only                  = true
 

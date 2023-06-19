@@ -38,6 +38,12 @@ variable "additional_app_settings" {
   default     = {}
 }
 
+variable "additional_tags" {
+  type        = map(string)
+  description = "Additional tags to set for resources"
+  default     = {}
+}
+
 variable "time_zone" {
   type        = string
   description = "The name of time zone as the basis for automatic update timing."
