@@ -1,37 +1,16 @@
-variable "function_app_name" {
+variable "app_base_name" {
   type        = string
-  description = "The name of the Function App to create."
-}
-
-variable "allowed_ip_addresses" {
-  type        = list(string)
-  description = "A list of allowed ip addresses that can access the Acmebot UI."
-  default     = []
-}
-
-variable "app_service_plan_name" {
-  type        = string
-  description = "The name of the App Service Plan to create."
-}
-
-variable "storage_account_name" {
-  type        = string
-  description = "The name of the Storage Account to create."
-}
-
-variable "app_insights_name" {
-  type        = string
-  description = "The name of the Application Insights to create."
-}
-
-variable "workspace_name" {
-  type        = string
-  description = "The name of the Log Analytics Workspace to create."
+  description = "The name of the App base to create."
 }
 
 variable "resource_group_name" {
   type        = string
   description = "Resource group name to be added."
+}
+
+variable "location" {
+  type        = string
+  description = "Azure region to create resources."
 }
 
 variable "auth_settings" {
@@ -47,9 +26,15 @@ variable "auth_settings" {
   default     = null
 }
 
-variable "app_settings" {
-  description = "Additional settings to set for the function app"
+variable "allowed_ip_addresses" {
+  type        = list(string)
+  description = "A list of allowed ip addresses that can access the Acmebot UI."
+  default     = []
+}
+
+variable "additional_app_settings" {
   type        = map(string)
+  description = "Additional settings to set for the function app"
   default     = {}
 }
 
@@ -59,11 +44,13 @@ variable "additional_tags" {
   default     = {}
 }
 
-variable "location" {
+variable "time_zone" {
   type        = string
-  description = "Azure region to create resources."
+  description = "The name of time zone as the basis for automatic update timing."
+  default     = "UTC"
 }
 
+# Acmebot Configuration
 variable "vault_uri" {
   type        = string
   description = "URL of the Key Vault to store the issued certificate."
@@ -84,12 +71,6 @@ variable "environment" {
   type        = string
   description = "The name of the Azure environment."
   default     = "AzureCloud"
-}
-
-variable "time_zone" {
-  type        = string
-  description = "The name of time zone as the basis for automatic update timing."
-  default     = "UTC"
 }
 
 variable "webhook_url" {

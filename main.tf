@@ -1,5 +1,5 @@
 resource "azurerm_storage_account" "storage" {
-  name                = var.storage_account_name
+  name                = "st${replace(lower(var.app_base_name), "/[^a-z0-9]/", "")}"
   resource_group_name = var.resource_group_name
   location            = var.location
   tags                = var.additional_tags
@@ -19,7 +19,7 @@ resource "azurerm_storage_account" "storage" {
 }
 
 resource "azurerm_service_plan" "serverfarm" {
-  name                = var.app_service_plan_name
+  name                = "plan-${var.app_base_name}"
   resource_group_name = var.resource_group_name
   location            = var.location
   tags                = var.additional_tags
@@ -35,7 +35,7 @@ resource "azurerm_service_plan" "serverfarm" {
 }
 
 resource "azurerm_log_analytics_workspace" "workspace" {
-  name                = var.workspace_name
+  name                = "log-${var.app_base_name}"
   resource_group_name = var.resource_group_name
   location            = var.location
   tags                = var.additional_tags
@@ -51,7 +51,7 @@ resource "azurerm_log_analytics_workspace" "workspace" {
 }
 
 resource "azurerm_application_insights" "insights" {
-  name                = var.app_insights_name
+  name                = "appi-${var.app_base_name}"
   resource_group_name = var.resource_group_name
   location            = var.location
   tags                = var.additional_tags
@@ -67,7 +67,7 @@ resource "azurerm_application_insights" "insights" {
 }
 
 resource "azurerm_windows_function_app" "function" {
-  name                = var.function_app_name
+  name                = "func-${var.app_base_name}"
   resource_group_name = var.resource_group_name
   location            = var.location
   tags                = var.additional_tags
@@ -81,7 +81,7 @@ resource "azurerm_windows_function_app" "function" {
   app_settings = merge({
     "WEBSITE_RUN_FROM_PACKAGE" = "https://stacmebotprod.blob.core.windows.net/keyvault-acmebot/v4/latest.zip"
     "WEBSITE_TIME_ZONE"        = var.time_zone
-  }, local.acmebot_app_settings, local.auth_app_settings, var.app_settings)
+  }, local.acmebot_app_settings, local.auth_app_settings, var.additional_app_settings)
 
   dynamic "sticky_settings" {
     for_each = toset(length(local.auth_app_settings) != 0 ? [1] : [])

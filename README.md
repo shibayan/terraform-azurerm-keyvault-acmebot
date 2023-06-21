@@ -12,11 +12,7 @@ module "keyvault_acmebot" {
   source  = "shibayan/keyvault-acmebot/azurerm"
   version = "~> 2.0"
 
-  function_app_name     = "func-acmebot-module"
-  app_service_plan_name = "plan-acmebot-module"
-  storage_account_name  = "stacmebotmodule"
-  app_insights_name     = "appi-acmebot-module"
-  workspace_name        = "log-acmebot-module"
+  app_base_name         = "acmebot-module"
   resource_group_name   = azurerm_resource_group.default.name
   location              = azurerm_resource_group.default.location
   mail_address          = "YOUR-EMAIL-ADDRESS"

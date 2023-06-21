@@ -1,5 +1,9 @@
 provider "azurerm" {
-  features {}
+  features {
+    resource_group {
+      prevent_deletion_if_contains_resources = false
+    }
+  }
 }
 
 terraform {
@@ -42,18 +46,22 @@ resource "azuread_application_password" "default" {
   rotate_when_changed = {
     rotation = time_rotating.default.id
   }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 data "azurerm_client_config" "current" {
 }
 
 resource "azurerm_resource_group" "default" {
-  name     = "rg-acmebot-module"
+  name     = "rg-acmebot"
   location = "westus2"
 }
 
 resource "azurerm_key_vault" "default" {
-  name                = "kv-acmebot-module-${random_string.random.result}"
+  name                = "kv-acmebot-${random_string.random.result}"
   resource_group_name = azurerm_resource_group.default.name
   location            = azurerm_resource_group.default.location
 
@@ -73,15 +81,11 @@ module "keyvault_acmebot" {
   source  = "shibayan/keyvault-acmebot/azurerm"
   version = "~> 2.0"
 
-  function_app_name     = "func-acmebot-module-${random_string.random.result}"
-  app_service_plan_name = "plan-acmebot-module-${random_string.random.result}"
-  storage_account_name  = "stacmebotmodule${random_string.random.result}"
-  app_insights_name     = "appi-acmebot-module-${random_string.random.result}"
-  workspace_name        = "log-acmebot-module-${random_string.random.result}"
-  resource_group_name   = azurerm_resource_group.default.name
-  location              = azurerm_resource_group.default.location
-  mail_address          = "YOUR-EMAIL-ADDRESS"
-  vault_uri             = azurerm_key_vault.default.vault_uri
+  app_base_name       = "acmebot-${random_string.random.result}"
+  resource_group_name = azurerm_resource_group.default.name
+  location            = azurerm_resource_group.default.location
+  mail_address        = "YOUR-EMAIL-ADDRESS"
+  vault_uri           = azurerm_key_vault.default.vault_uri
 
   azure_dns = {
     subscription_id = data.azurerm_client_config.current.subscription_id
