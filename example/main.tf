@@ -79,7 +79,7 @@ resource "azurerm_role_assignment" "default" {
 
 module "keyvault_acmebot" {
   source  = "shibayan/keyvault-acmebot/azurerm"
-  version = "~> 2.0"
+  version = "~> 3.0"
 
   app_base_name       = "acmebot-${random_string.random.result}"
   resource_group_name = azurerm_resource_group.default.name
