@@ -1,5 +1,5 @@
 resource "azurerm_storage_account" "storage" {
-  name                = "st${replace(lower(var.app_base_name), "/[^a-z0-9\\-]/", "")}"
+  name                = "st${replace(lower(var.app_base_name), "/[^a-z0-9]/", "")}"
   resource_group_name = var.resource_group_name
   location            = var.location
   tags                = var.additional_tags
