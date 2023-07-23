@@ -20,6 +20,8 @@ resource "random_string" "random" {
   special = false
 }
 
+resource "random_uuid" "user_impersonation" {}
+
 resource "time_rotating" "default" {
   rotation_days = 180
 }
@@ -27,16 +29,37 @@ resource "time_rotating" "default" {
 data "azuread_client_config" "current" {}
 
 resource "azuread_application" "default" {
-  display_name = "Acmebot ${random_string.random.result}"
+  display_name    = "Acmebot ${random_string.random.result}"
+  identifier_uris = ["api://keyvault-acmebot-${random_string.random.result}"]
+  owners          = [data.azuread_client_config.current.object_id]
+
+  api {
+    requested_access_token_version = 2
+
+    oauth2_permission_scope {
+      admin_consent_description  = "Allow the application to access Acmebot on behalf of the signed-in user."
+      admin_consent_display_name = "Access Acmebot"
+      enabled                    = true
+      id                         = random_uuid.user_impersonation.result
+      type                       = "User"
+      user_consent_description   = "Allow the application to access Acmebot on your behalf."
+      user_consent_display_name  = "Access Acmebot"
+      value                      = "user_impersonation"
+    }
+  }
 
   web {
-    redirect_uris = ["https://func-acmebot-module-${random_string.random.result}.azurewebsites.net/.auth/login/aad/callback"]
+    redirect_uris = ["https://func-acmebot-${random_string.random.result}.azurewebsites.net/.auth/login/aad/callback"]
 
     implicit_grant {
       access_token_issuance_enabled = false
       id_token_issuance_enabled     = true
     }
   }
+}
+
+resource "azuread_service_principal" "default" {
+  application_id = azuread_application.default.application_id
 }
 
 resource "azuread_application_password" "default" {
@@ -99,8 +122,6 @@ module "keyvault_acmebot" {
       tenant_auth_endpoint = "https://login.microsoftonline.com/${data.azuread_client_config.current.tenant_id}/v2.0"
     }
   }
-
-  allowed_ip_addresses = ["192.168.10.1/32"]
 }
 
 output "principal_id" {
