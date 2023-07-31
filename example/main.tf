@@ -48,6 +48,22 @@ resource "azuread_application" "default" {
     }
   }
 
+  app_role {
+    allowed_member_types = ["User", "Application"]
+    description          = "Allow new and renew certificate"
+    display_name         = "Acmebot.IssueCertificate"
+    is_enabled           = true
+    value                = "Acmebot.IssueCertificate"
+  }
+
+  app_role {
+    allowed_member_types = ["User", "Application"]
+    description          = "Allow revoke certificate"
+    display_name         = "Acmebot.RevokeCertificate"
+    is_enabled           = true
+    value                = "Acmebot.RevokeCertificate"
+  }
+
   web {
     redirect_uris = ["https://func-acmebot-${random_string.random.result}.azurewebsites.net/.auth/login/aad/callback"]
 
