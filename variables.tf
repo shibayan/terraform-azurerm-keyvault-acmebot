@@ -85,6 +85,12 @@ variable "mitigate_chain_order" {
   default     = false
 }
 
+variable "app_role_required" {
+  type        = bool
+  description = "Specify whether additional App Role assignment is required during Azure AD authentication."
+  default     = false
+}
+
 variable "external_account_binding" {
   type = object({
     key_id    = string
@@ -227,6 +233,7 @@ locals {
     "Acmebot:VaultBaseUrl"       = var.vault_uri
     "Acmebot:Environment"        = var.environment
     "Acmebot:MitigateChainOrder" = var.mitigate_chain_order
+    "Acmebot:AppRoleRequired"    = var.app_role_required
   }
 
   acmebot_app_settings = merge(
