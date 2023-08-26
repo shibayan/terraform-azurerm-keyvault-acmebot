@@ -1,0 +1,33 @@
+name: Validate example
+
+on:
+  pull_request:
+    branches: [ master ]
+
+env:
+  TERRAFORM_VERSION: 1.5.6
+
+defaults:
+  run:
+    working-directory: example
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup terraform ${{ env.TERRAFORM_VERSION }}
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: ${{ env.TERRAFORM_VERSION }}
+
+    - name: terraform fmt
+      run: terraform fmt -check
+
+    - name: terraform init
+      run: terraform init
+
+    - name: terraform validate
+      run: terraform validate
