@@ -64,7 +64,7 @@ variable "mail_address" {
 variable "acme_endpoint" {
   type        = string
   description = "Certification authority ACME Endpoint."
-  default     = "https://acme-v02.api.letsencrypt.org/"
+  default     = "https://acme-v02.api.letsencrypt.org/directory"
 }
 
 variable "environment" {
