@@ -22,6 +22,10 @@ resource "random_string" "random" {
 
 resource "random_uuid" "user_impersonation" {}
 
+resource "random_uuid" "app_role_issue" {}
+
+resource "random_uuid" "app_role_revoke" {}
+
 resource "time_rotating" "default" {
   rotation_days = 180
 }
@@ -52,16 +56,18 @@ resource "azuread_application" "default" {
     allowed_member_types = ["User", "Application"]
     description          = "Allow new and renew certificate"
     display_name         = "Acmebot.IssueCertificate"
-    is_enabled           = true
+    enabled              = true
     value                = "Acmebot.IssueCertificate"
+    id                   = random_uuid.app_role_issue.result
   }
 
   app_role {
     allowed_member_types = ["User", "Application"]
     description          = "Allow revoke certificate"
     display_name         = "Acmebot.RevokeCertificate"
-    is_enabled           = true
+    enabled              = true
     value                = "Acmebot.RevokeCertificate"
+    id                   = random_uuid.app_role_revoke.result
   }
 
   web {
