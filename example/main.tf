@@ -58,7 +58,7 @@ resource "azuread_application" "default" {
     display_name         = "Acmebot.IssueCertificate"
     enabled              = true
     value                = "Acmebot.IssueCertificate"
-    id                   = random_uuid.app_role_add_renew.result
+    id                   = random_uuid.app_role_issue.result
   }
 
   app_role {
