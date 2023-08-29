@@ -22,7 +22,7 @@ resource "random_string" "random" {
 
 resource "random_uuid" "user_impersonation" {}
 
-resource "random_uuid" "app_role_add_renew" {}
+resource "random_uuid" "app_role_issue" {}
 
 resource "random_uuid" "app_role_revoke" {}
 
