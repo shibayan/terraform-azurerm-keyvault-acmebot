@@ -120,6 +120,8 @@ resource "azurerm_windows_function_app" "function" {
     application_insights_connection_string = azurerm_application_insights.insights.connection_string
     ftps_state                             = "Disabled"
     minimum_tls_version                    = "1.2"
+    scm_minimum_tls_version                = "1.2"
+    scm_use_main_ip_restriction            = true
 
     application_stack {
       dotnet_version = "v6.0"
