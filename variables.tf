@@ -50,6 +50,11 @@ variable "time_zone" {
   default     = "UTC"
 }
 
+variable "enable_insights" {
+    description = "Enable or disable the creation of the insights"
+    default     = true
+}
+
 # Acmebot Configuration
 variable "vault_uri" {
   type        = string

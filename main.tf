@@ -34,7 +34,10 @@ resource "azurerm_service_plan" "serverfarm" {
   }
 }
 
+
+
 resource "azurerm_log_analytics_workspace" "workspace" {
+  count               = var.enable_insights ? 1 : 0
   name                = "log-${var.app_base_name}"
   resource_group_name = var.resource_group_name
   location            = var.location
@@ -51,6 +54,7 @@ resource "azurerm_log_analytics_workspace" "workspace" {
 }
 
 resource "azurerm_application_insights" "insights" {
+  count               = var.enable_insights ? 1 : 0
   name                = "appi-${var.app_base_name}"
   resource_group_name = var.resource_group_name
   location            = var.location
