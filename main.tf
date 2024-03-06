@@ -105,7 +105,7 @@ resource "azurerm_windows_function_app" "function" {
       unauthenticated_action = "RedirectToLoginPage"
 
       login {
-        token_store_enabled = true
+        token_store_enabled = false
       }
 
       active_directory_v2 {
