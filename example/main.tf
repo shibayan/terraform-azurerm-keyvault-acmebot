@@ -85,7 +85,7 @@ resource "azuread_service_principal" "default" {
 }
 
 resource "azuread_application_password" "default" {
-  application_object_id = azuread_application.default.object_id
+  application_id = azuread_application.default.object_id
   end_date_relative     = "8640h"
 
   rotate_when_changed = {
