@@ -35,7 +35,7 @@ data "azuread_client_config" "current" {}
 resource "azuread_application" "default" {
   display_name    = "Acmebot ${random_string.random.result}"
   identifier_uris = ["api://keyvault-acmebot-${random_string.random.result}"]
-  owners          = [data.azuread_client_config.current.object_id]
+  owners          = [data.azuread_client_config.current.application_id]
 
   api {
     requested_access_token_version = 2
