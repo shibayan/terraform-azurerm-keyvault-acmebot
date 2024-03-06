@@ -124,7 +124,7 @@ resource "azurerm_windows_function_app" "function" {
   }
 
   site_config {
-    application_insights_connection_string = var.enable_insights ? azurerm_application_insights.insights.connection_string : null
+    application_insights_connection_string = var.enable_insights ? azurerm_application_insights.insights[0].connection_string : null
     ftps_state                             = "Disabled"
     minimum_tls_version                    = "1.2"
 
