@@ -124,7 +124,7 @@ resource "azurerm_windows_function_app" "function" {
   }
 
   site_config {
-    application_insights_connection_string = azurerm_application_insights.insights.connection_string
+    application_insights_connection_string = var.enable_insights ? azurerm_application_insights.insights.connection_string : null
     ftps_state                             = "Disabled"
     minimum_tls_version                    = "1.2"
 
@@ -145,7 +145,8 @@ resource "azurerm_windows_function_app" "function" {
     ignore_changes = [
       tags,
       app_settings["MICROSOFT_PROVIDER_AUTHENTICATION_SECRET"],
-      sticky_settings["app_setting_names"]
+      sticky_settings["app_setting_names"],
+      auth_settings_v2[0].active_directory_v2[0].allowed_applications,
     ]
   }
 }
