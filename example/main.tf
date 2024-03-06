@@ -35,7 +35,7 @@ data "azuread_client_config" "current" {}
 resource "azuread_application" "default" {
   display_name    = "Acmebot ${random_string.random.result}"
   identifier_uris = ["api://keyvault-acmebot-${random_string.random.result}"]
-  owners          = [data.azuread_client_config.current.object_id]
+  owners          = [data.azuread_client_config.current.application_id]
 
   api {
     requested_access_token_version = 2
@@ -85,7 +85,7 @@ resource "azuread_service_principal" "default" {
 }
 
 resource "azuread_application_password" "default" {
-  application_object_id = azuread_application.default.object_id
+  application_id = azuread_application.default.application_id
   end_date_relative     = "8640h"
 
   rotate_when_changed = {

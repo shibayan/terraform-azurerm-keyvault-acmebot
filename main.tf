@@ -109,6 +109,9 @@ resource "azurerm_windows_function_app" "function" {
       }
 
       active_directory_v2 {
+        allowed_applications = [
+          var.auth_settings.active_directory.client_id
+        ]
         client_id                  = var.auth_settings.active_directory.client_id
         client_secret_setting_name = "MICROSOFT_PROVIDER_AUTHENTICATION_SECRET"
         tenant_auth_endpoint       = var.auth_settings.active_directory.tenant_auth_endpoint
