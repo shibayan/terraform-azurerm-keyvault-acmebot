@@ -81,12 +81,15 @@ resource "azuread_application" "default" {
 }
 
 resource "azuread_service_principal" "default" {
-  application_id = azuread_application.default.application_id
+  client_id = azuread_application.default.client_id
+  owners    = [data.azuread_client_config.current.object_id]
+
+  app_role_assignment_required = false
 }
 
 resource "azuread_application_password" "default" {
-  application_object_id = azuread_application.default.object_id
-  end_date_relative     = "8640h"
+  application_id    = azuread_application.default.id
+  end_date_relative = "8640h"
 
   rotate_when_changed = {
     rotation = time_rotating.default.id
@@ -139,7 +142,7 @@ module "keyvault_acmebot" {
   auth_settings = {
     enabled = true
     active_directory = {
-      client_id            = azuread_application.default.application_id
+      client_id            = azuread_application.default.client_id
       client_secret        = azuread_application_password.default.value
       tenant_auth_endpoint = "https://login.microsoftonline.com/${data.azuread_client_config.current.tenant_id}/v2.0"
     }
