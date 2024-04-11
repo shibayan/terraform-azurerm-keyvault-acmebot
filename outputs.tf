@@ -16,4 +16,5 @@ output "allowed_ip_addresses" {
 output "api_key" {
   value       = data.azurerm_function_app_host_keys.function.default_function_key
   description = "Created Default Functions API Key"
+  sensitive   = true
 }
