@@ -4,9 +4,6 @@ on:
   pull_request:
     branches: [ master ]
 
-env:
-  TERRAFORM_VERSION: 1.5.6
-
 defaults:
   run:
     working-directory: example
@@ -16,12 +13,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
-    - name: Setup terraform ${{ env.TERRAFORM_VERSION }}
-      uses: hashicorp/setup-terraform@v2
-      with:
-        terraform_version: ${{ env.TERRAFORM_VERSION }}
+    - name: Setup Terraform CLI
+      uses: hashicorp/setup-terraform@v3
 
     - name: terraform fmt
       run: terraform fmt -check
