@@ -127,6 +127,8 @@ resource "azurerm_windows_function_app" "function" {
       dotnet_version = "v8.0"
     }
 
+    ip_restriction_default_action = length(var.allowed_ip_addresses) != 0 ? "Deny" : "Allow"
+
     dynamic "ip_restriction" {
       for_each = var.allowed_ip_addresses
 
