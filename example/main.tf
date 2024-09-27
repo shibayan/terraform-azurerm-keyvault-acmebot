@@ -8,8 +8,8 @@ provider "azurerm" {
 
 terraform {
   required_providers {
-    azurerm = "~> 3.0"
-    azuread = "~> 2.0"
+    azurerm = "~> 4.0"
+    azuread = "~> 3.0"
   }
 }
 
@@ -88,8 +88,8 @@ resource "azuread_service_principal" "default" {
 }
 
 resource "azuread_application_password" "default" {
-  application_id    = azuread_application.default.id
-  end_date_relative = "8640h"
+  application_id = azuread_application.default.id
+  end_date       = timeadd(timestamp(), "8760h")
 
   rotate_when_changed = {
     rotation = time_rotating.default.id
