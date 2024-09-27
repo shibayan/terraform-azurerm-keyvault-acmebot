@@ -88,8 +88,8 @@ resource "azuread_service_principal" "default" {
 }
 
 resource "azuread_application_password" "default" {
-  application_id    = azuread_application.default.id
-  end_date = timeadd(timestamp(), "8760h")
+  application_id = azuread_application.default.id
+  end_date       = timeadd(timestamp(), "8760h")
 
   rotate_when_changed = {
     rotation = time_rotating.default.id
