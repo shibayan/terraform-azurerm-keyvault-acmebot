@@ -18,3 +18,8 @@ output "api_key" {
   description = "Created Default Functions API Key"
   sensitive   = true
 }
+
+output "default_hostname" {
+  value       = azurerm_windows_function_app.function.default_hostname
+  description = "Default hostname of the function app"
+}
