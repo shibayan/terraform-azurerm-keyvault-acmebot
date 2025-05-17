@@ -79,6 +79,6 @@ locals {
   )
 
   auth_app_settings = var.auth_settings != null ? {
-    "MICROSOFT_PROVIDER_AUTHENTICATION_SECRET" = var.auth_settings.active_directory.client_secret
+    "${var.auth_settings.active_directory.client_secret_setting_name}" = var.auth_settings.active_directory.client_secret
   } : {}
 }

@@ -17,13 +17,31 @@ variable "auth_settings" {
   type = object({
     enabled = bool
     active_directory = object({
-      client_id            = string
-      client_secret        = string
-      tenant_auth_endpoint = string
+      client_id                  = string
+      client_secret              = string
+      client_secret_setting_name = optional(string, "MICROSOFT_PROVIDER_AUTHENTICATION_SECRET")
+      tenant_auth_endpoint       = string
     })
   })
-  description = "Authentication settings for the function app"
   default     = null
+  description = <<EOL
+    Authentication settings for the function app.
+    - enabled: Enable authentication for the function app.
+    - active_directory: Active Directory authentication settings.
+      - client_id: The client ID of the Azure AD application.
+      - client_secret: The client secret of the Azure AD application. This can be set to the client ID of a user-assigned managed identity.
+      - client_secret_setting_name: The name of the setting to store the client secret.
+        Default is "MICROSOFT_PROVIDER_AUTHENTICATION_SECRET". Set to "OVERRIDE_USE_MI_FIC_ASSERTION_CLIENTID" to use managed identity federated authentication instead of secret.
+      - tenant_auth_endpoint: The authentication endpoint for the Azure AD tenant.
+  EOL
+}
+
+variable "identity" {
+  type = object({
+    identity_ids = optional(list(string), [])
+  })
+  default     = {}
+  description = "Object with the list of user assigned identity IDs to assign to the function app."
 }
 
 variable "allowed_ip_addresses" {
