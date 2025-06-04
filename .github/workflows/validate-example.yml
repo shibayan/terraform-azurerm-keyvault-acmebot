@@ -6,7 +6,7 @@ on:
 
 defaults:
   run:
-    working-directory: example
+    working-directory: example/default
 
 jobs:
   validate:
