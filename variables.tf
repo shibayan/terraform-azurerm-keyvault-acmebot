@@ -172,6 +172,12 @@ variable "trans_ip" {
   default = null
 }
 
+variable "log_analytics_workspace_id" {
+  type        = string
+  default     = null
+  description = "The resource ID for a custom log analytics workspace. Setting this var will prevent the module from creating it's own workspace."
+}
+
 locals {
   external_account_binding = var.external_account_binding != null ? {
     "Acmebot:ExternalAccountBinding:KeyId"     = var.external_account_binding.key_id
