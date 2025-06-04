@@ -18,3 +18,8 @@ output "api_key" {
   description = "Created Default Functions API Key"
   sensitive   = true
 }
+
+output "log_analytics_workspace_id" {
+  value       = try(azurerm_log_analytics_workspace.workspace[0].id, var.log_analytics_workspace_id)
+  description = "The ID for the log analytics workspace used in the module."
+}
