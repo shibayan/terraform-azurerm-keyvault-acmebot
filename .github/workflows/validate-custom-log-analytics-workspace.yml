@@ -1,0 +1,28 @@
+name: Validate custom log analytics workspace example
+
+on:
+  pull_request:
+    branches: [ master ]
+
+defaults:
+  run:
+    working-directory: example/custom_log_analytics_workspace
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Terraform CLI
+      uses: hashicorp/setup-terraform@v3
+
+    - name: terraform fmt
+      run: terraform fmt -check
+
+    - name: terraform init
+      run: terraform init
+
+    - name: terraform validate
+      run: terraform validate
