@@ -23,3 +23,8 @@ output "log_analytics_workspace_id" {
   value       = try(azurerm_log_analytics_workspace.workspace[0].id, var.log_analytics_workspace_id)
   description = "The ID for the log analytics workspace used in the module."
 }
+
+output "application_insights_id" {
+  value       = azurerm_application_insights.insights.id
+  description = "The resource ID for the application insights resource setup by this module."
+}
