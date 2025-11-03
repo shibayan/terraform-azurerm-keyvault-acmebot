@@ -4,7 +4,7 @@ resource "azurerm_storage_account" "storage" {
   location            = var.location
   tags                = var.additional_tags
 
-  account_kind                    = "Storage"
+  account_kind                    = "StorageV2"
   account_tier                    = "Standard"
   account_replication_type        = "LRS"
   allow_nested_items_to_be_public = false
