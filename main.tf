@@ -92,7 +92,8 @@ resource "azurerm_windows_function_app" "function" {
   }
 
   identity {
-    type = "SystemAssigned"
+    type         = length(var.identity.identity_ids) > 0 ? "SystemAssigned, UserAssigned" : "SystemAssigned"
+    identity_ids = var.identity.identity_ids
   }
 
   dynamic "auth_settings_v2" {
@@ -110,7 +111,7 @@ resource "azurerm_windows_function_app" "function" {
 
       active_directory_v2 {
         client_id                  = var.auth_settings.active_directory.client_id
-        client_secret_setting_name = "MICROSOFT_PROVIDER_AUTHENTICATION_SECRET"
+        client_secret_setting_name = var.auth_settings.active_directory.client_secret_setting_name
         tenant_auth_endpoint       = var.auth_settings.active_directory.tenant_auth_endpoint
       }
     }
