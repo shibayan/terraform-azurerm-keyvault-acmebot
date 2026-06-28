@@ -5,6 +5,10 @@
 [![License](https://badgen.net/github/license/shibayan/terraform-azurerm-keyvault-acmebot)](https://github.com/shibayan/terraform-azurerm-keyvault-acmebot/blob/master/LICENSE)
 [![Terraform Registry](https://badgen.net/badge/terraform/registry/5c4ee5)](https://registry.terraform.io/modules/shibayan/keyvault-acmebot/azurerm/latest)
 
+> [!IMPORTANT]
+> This module is for Acmebot v4 and will be archived because Acmebot v5 has moved to a new repository.
+> For new deployments, use [polymind-inc/terraform-azurerm-acmebot](https://github.com/polymind-inc/terraform-azurerm-acmebot) instead.
+
 ## Usage
 
 ```hcl
