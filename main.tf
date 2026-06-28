@@ -78,9 +78,9 @@ resource "azurerm_windows_function_app" "function" {
   https_only                  = true
 
   app_settings = merge({
-    "FUNCTIONS_INPROC_NET8_ENABLED" = "1"
-    "WEBSITE_RUN_FROM_PACKAGE"      = "https://stacmebotprod.blob.core.windows.net/keyvault-acmebot/v4/latest.zip"
-    "WEBSITE_TIME_ZONE"             = var.time_zone
+    "WEBSITE_RUN_FROM_PACKAGE" = "https://stacmebotprod.blob.core.windows.net/keyvault-acmebot/v5/latest.zip"
+    "WEBSITE_TIME_ZONE"        = var.time_zone
+    "FUNCTIONS_WORKER_RUNTIME" = "dotnet-isolated"
   }, local.acmebot_app_settings, local.auth_app_settings, var.additional_app_settings)
 
   dynamic "sticky_settings" {
@@ -122,9 +122,10 @@ resource "azurerm_windows_function_app" "function" {
     minimum_tls_version                    = "1.2"
     scm_minimum_tls_version                = "1.2"
     scm_use_main_ip_restriction            = true
+    use_32_bit_worker                      = false
 
     application_stack {
-      dotnet_version = "v8.0"
+      dotnet_version = "v10.0"
     }
 
     ip_restriction_default_action = length(var.allowed_ip_addresses) != 0 ? "Deny" : "Allow"
